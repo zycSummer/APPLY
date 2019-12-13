@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.cloud.jetsndcxqyapply.mapper.StreetMapper">
+
+    <select id="getSysIndustrialPark" parameterType="string" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysIndustrialPark">
+        SELECT * FROM tb_sys_industrial_park WHERE street_id =#{streetId}
+    </select>
+
+    <select id="getTownStreetSum" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1) FROM (
+            SELECT s.site_id siteId,
+            s.site_name siteName,
+            p.`park_name` parkName,
+            t.`street_Name` streetName,
+            tsa.street_submit_time streetSumbitTime,
+            IFNULL(tsa.street_suggestion,'') streetSuggestion,
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+            SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE  street_value END,0) AS DECIMAL(8,1))) streetValue
+            FROM tb_site s
+            LEFT JOIN tb_sys_industrial_park p ON s.`park_id` = p.`park_id`
+            LEFT JOIN tb_sys_street t ON s.`street_id` = t.`street_id`
+            LEFT JOIN tb_site_application_index_value v ON s.`site_id` = v.`site_id`
+            LEFT JOIN tb_site_application tsa ON s.`site_id`=tsa.site_id
+            <where>
+                tsa.self_submit_time IS NOT NULL
+                and p.street_id = t.street_id
+                <if test="streetId != null and streetId!='' ">
+                    AND t.street_id =#{streetId}
+                </if>
+                <if test="parkId != null  and parkId!='' ">
+                    and p.`park_id` =#{parkId}
+                </if>
+                <if test="siteName != null and siteName!='' ">
+                    and s.site_name like CONCAT('%',#{siteName},'%')
+                </if>
+            </where>
+        GROUP BY s.`site_id`
+        ORDER BY streetValue,selfValue DESC) a
+    </select>
+
+    <!--查询默认全部的值-->
+    <select id="getTownStreet" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM (
+            SELECT s.site_id siteId,
+            s.site_name siteName,
+            p.`park_name` parkName,
+            t.`street_Name` streetName,
+            tsa.street_submit_time streetSumbitTime,
+            IFNULL(tsa.street_suggestion,'') streetSuggestion,
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+            SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE  street_value END,0) AS DECIMAL(8,1))) streetValue
+            FROM tb_site s
+            LEFT JOIN tb_sys_industrial_park p ON s.`park_id` = p.`park_id`
+            LEFT JOIN tb_sys_street t ON s.`street_id` = t.`street_id`
+            LEFT JOIN tb_site_application_index_value v ON s.`site_id` = v.`site_id`
+            LEFT JOIN tb_site_application tsa ON s.`site_id`=tsa.site_id
+            <where>
+                tsa.self_submit_time IS NOT NULL
+                and p.street_id = t.street_id
+                <if test="streetId != null and streetId!='' ">
+                    AND t.street_id =#{streetId}
+                </if>
+                <if test="parkId != null  and parkId!='' ">
+                    and p.`park_id` =#{parkId}
+                </if>
+                <if test="siteName != null and siteName!='' ">
+                    and s.site_name like CONCAT('%',#{siteName},'%')
+                </if>
+            </where>
+            GROUP BY s.`site_id`
+            ORDER BY streetValue,selfValue DESC) a
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="streetReview" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT
+            n.siteId,
+            n.siteName,
+            n.districtCommitteeTitle,
+            n.streetSuggestion,
+            n.selfValue,
+            n.streetValue,
+            n.districtValue,
+            n.streetReviewResult,
+            n.districtReviewResult,
+            SUM(CAST(IFNULL(n.street_review_value, 0 ) AS DECIMAL ( 8, 1 ) ) ) streetReviewValue,
+            SUM(CAST(IFNULL( CASE WHEN (n. district_review_value = '' OR n.district_review_value IS NULL ) THEN n.street_review_value ELSE n.district_review_value END, 0 ) AS DECIMAL (8,1))) districtReviewValue
+        from
+        (SELECT
+            m.*,
+            tsr.street_review_result streetReviewResult,
+            tsr.district_review_result districtReviewResult,
+            tsriv.street_review_value,
+            tsriv.district_review_value
+        from
+            (SELECT
+                ts.site_id siteId,
+                ts.site_name siteName,
+                tsa.district_committee_title districtCommitteeTitle,
+                tsa.street_suggestion streetSuggestion,
+                tsa.district_committee_time districtCommitteeTime,
+                SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+                SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS	DECIMAL(8,1))) streetValue,
+                SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+            FROM
+                tb_site ts,
+                tb_site_application tsa,
+                tb_site_application_index_value tsai,
+                tb_sys_industrial_park p,
+                tb_sys_street t
+        WHERE
+            ts.site_id = tsa.site_id
+            AND ts.site_id = tsai.site_id
+            <if test="siteIds != null and siteIds!='' ">
+                <foreach collection="siteIds" item="siteId" index="index" open="and ts.site_id in(" separator="," close=")">
+                    #{siteId}
+                </foreach>
+            </if>
+            and tsa.district_committee_title is not null
+            <!--and substring_index(tsa.district_committee_time,"-",1)=#{year1}-->
+            and ts.`park_id` = p.`park_id`
+            and ts.`street_id` = t.`street_id`
+            <if test="streetId != null and streetId!='' ">
+                AND t.street_id =#{streetId}
+            </if>
+            <choose>
+                <when test="parkId !=null and parkId != ''">
+                    and p.`park_id` =#{parkId}
+                </when>
+                <otherwise>
+                    and p.park_id in
+                    <foreach collection="parkIds" item="parkId" index="index" open="(" separator="," close=")">
+                        #{parkId}
+                    </foreach>
+                </otherwise>
+            </choose>
+            <if test="siteName != null and siteName!='' ">
+                and ts.site_name like CONCAT('%',#{siteName},'%')
+            </if>
+            GROUP BY ts.site_id) m
+            JOIN tb_site_review_index_value tsriv on  m.siteId = tsriv.site_id and tsriv.year=#{year1}
+            JOIN tb_site_review tsr on  m.siteId = tsr.site_id and tsr.year=#{year1}
+                AND (tsr.review_result = '0' or substring_index( m.districtCommitteeTime, "-", 1 )=#{year1})
+            JOIN tb_site_application_appendix tsap on m.siteId = tsap.site_id AND tsap.review = '1'
+        GROUP BY m.siteId,tsriv.index_id) n
+        group by n.siteId
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="sumStreetReview" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1) from
+        (SELECT
+            n.siteId,
+            n.siteName,
+            n.districtCommitteeTitle,
+            n.streetSuggestion,
+            n.selfValue,
+            n.streetValue,
+            n.districtValue,
+            n.streetReviewResult,
+            n.districtReviewResult,
+            SUM(CAST(IFNULL(n.street_review_value, 0 ) AS DECIMAL ( 8, 1 ) ) ) streetReviewValue,
+            SUM(CAST(IFNULL( CASE WHEN (n. district_review_value = '' OR n.district_review_value IS NULL ) THEN n.street_review_value ELSE n.district_review_value END, 0 ) AS DECIMAL (8,1))) districtReviewValue
+        from
+        (SELECT
+        m.*,
+        tsr.street_review_result streetReviewResult,
+        tsr.district_review_result districtReviewResult,
+        tsriv.street_review_value,
+        tsriv.district_review_value
+        from
+        (SELECT
+        ts.site_id siteId,
+        ts.site_name siteName,
+        tsa.district_committee_title districtCommitteeTitle,
+        tsa.street_suggestion streetSuggestion,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS	DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+        tb_site ts,
+        tb_site_application tsa,
+        tb_site_application_index_value tsai,
+        tb_sys_industrial_park p,
+        tb_sys_street t
+        WHERE
+        ts.site_id = tsa.site_id
+        AND ts.site_id = tsai.site_id
+        <if test="siteIds != null and siteIds!='' ">
+            <foreach collection="siteIds" item="siteId" index="index" open="and ts.site_id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+        </if>
+        and tsa.district_committee_title is not null
+        and ts.`park_id` = p.`park_id`
+        and ts.`street_id` = t.`street_id`
+        <if test="streetId != null and streetId!='' ">
+            AND t.street_id =#{streetId}
+        </if>
+        <choose>
+            <when test="parkId !=null and parkId != ''">
+                and p.`park_id` =#{parkId}
+            </when>
+            <otherwise>
+                and p.park_id in
+                <foreach collection="parkIds" item="parkId" index="index" open="(" separator="," close=")">
+                    #{parkId}
+                </foreach>
+            </otherwise>
+        </choose>
+        <if test="siteName != null and siteName!='' ">
+            and ts.site_name like CONCAT('%',#{siteName},'%')
+        </if>
+        GROUP BY ts.site_id) m
+        left JOIN tb_site_review_index_value tsriv on  m.siteId = tsriv.site_id and tsriv.year=#{year}
+        left JOIN tb_site_review tsr on  m.siteId = tsr.site_id and tsr.year=#{year}
+        JOIN tb_site_application_appendix tsap on m.siteId = tsap.site_id AND tsap.review = '1'
+        GROUP BY m.siteId,tsriv.index_id) n
+        group by n.siteId) s
+    </select>
+
+    <insert id="insertStreetReview" parameterType="map">
+        REPLACE INTO tb_site_review_index_value (year,site_id,index_id,review_value,street_review_value,district_review_value)
+        VALUES
+        <foreach collection="list" item="tbSiteReviewIndexValue" index="index" separator=",">
+            (
+            #{tbSiteReviewIndexValue.year},
+            #{tbSiteReviewIndexValue.siteId},
+            #{tbSiteReviewIndexValue.indexId},
+            #{tbSiteReviewIndexValue.reviewValue},
+            #{tbSiteReviewIndexValue.streetReviewValue},
+            #{tbSiteReviewIndexValue.districtReviewValue}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="insertSiteReview" parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview">
+        REPLACE INTO tb_site_review (year,site_id,
+            review_result,review_user_id,review_time,
+            street_review_result,district_review_result,
+            street_review_time,district_review_time,
+            street_review_user_id,district_review_user_id)
+        VALUES (
+            #{year},
+            #{siteId},
+            #{reviewResult},
+            #{reviewUserId},
+            #{reviewTime},
+            #{streetReviewResult},
+            #{districtReviewResult},
+            #{streetReviewTime},
+            #{districtReviewTime},
+            #{streetReviewUserId},
+            #{districtReviewUserId}
+        )
+    </insert>
+
+    <update id="updateStreetReview" parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue">
+        update tb_site_review
+        set
+            year=#{year},site_id=#{siteId},
+            review_result=#{reviewResult},review_user_id=#{reviewUserId},review_time=#{reviewTime},
+            street_review_result=#{streetReviewResult},district_review_result=#{districtReviewResult},
+            street_review_time=#{streetReviewTime},district_review_time=#{districtReviewTime},
+            street_review_user_id=#{streetReviewUserId},district_review_user_id=#{districtReviewUserId}
+        <where>
+            year=#{year} and site_id=#{siteId}
+        </where>
+    </update>
+
+    <select id="getTbSiteReview" parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview"
+                resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview">
+        select * from tb_site_review where year=#{year} and site_id =#{siteId}
+    </select>
+
+    <select id="getIndex" resultType="map">
+        select index_id indexId,IFNULL(max,'N') max from tb_index where max is not null or enum is not null
+    </select>
+
+    <select id="getSeqIdsBySiteId" resultType="map" parameterType="string">
+        SELECT seq_id seqId,file_name fileName FROM `tb_site_application_appendix` where site_id=#{siteId} and review='1'
+    </select>
+
+    <select id="getSeqIdsBySiteIdZero" resultType="map" parameterType="string">
+        SELECT seq_id seqId,file_name fileName FROM `tb_site_application_appendix` where site_id=#{siteId} and review='0'
+    </select>
+</mapper>

@@ -1,0 +1,112 @@
+/* -------------------------------------  申报评定   ---------------------------------  */
+#assess{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#assess .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#assess .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#assess .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#assess .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+
+#assess .tableContent{
+    height:1px;
+    flex-grow:1;
+}
+/*区三方办公室评定*/
+#officeAssess{
+    height:600px;
+}
+#officeAssess h3{
+    text-align: center;
+}
+#officeAssess .tableConent{
+    margin:0 10px;
+}
+
+#officeAssess .layui-table-cell .layui-input {
+    height: 28px;
+}
+/* -------------------------------------  复审评定   ---------------------------------  */
+#review{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#review .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#review .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#review .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#review .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+
+#review .tableContent{
+    height:1px;
+    flex-grow:1;
+}
+/*区三方办公室复审评定*/
+#reviewAssess{
+    height:600px;
+}
+#reviewAssess h3{
+    text-align: center;
+}
+#reviewAssess .tableConent{
+    margin:0 10px;
+}
+
+#reviewAssess .layui-table-cell .layui-input {
+    height: 28px;
+}

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="loginHtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>苏州高新区劳动关系和谐企业和工业园申报管理系统</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="ctx" th:content="@{/}"/>
+    <link rel="icon" th:href="@{/public/web/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/public/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/zTree/css/zTreeStyle/zTreeStyle.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/main.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/committee.css}" media="all"/>
+</head>
+<body>
+    <div class="main">
+        <header>
+            <img src="/public/web/images/logo.png"/>
+            <h2>苏州高新区劳动关系和谐企业和工业园申报管理系统</h2>
+            <div id="message">
+                <a id="userName" href="javascript:void(0)">段飞</a>，欢迎您登录系统&nbsp; | &nbsp;<a id="signOut" href="javascript:void(0)">退出</a>
+            </div>
+        </header>
+        <div id="content">
+            <ul class="layui-nav layui-nav-tree" lay-filter="progress">
+                <li class="layui-nav-item"><a data-id="collect" href="javascript:void(0)">汇总</a></li>
+                <li class="layui-nav-item"><a data-id="recheck" href="javascript:void(0)">复审</a></li>
+                <li class="layui-nav-item"><a data-id="account" href="javascript:void(0)">账号管理</a></li>
+                <li class="layui-nav-item"><a data-id="accountTimeLimit" href="javascript:void(0)">账号时限管理</a></li>
+                <li class="layui-nav-item"><a data-id="systemMsg" href="javascript:void(0)">系统提示</a></li>
+                <li class="layui-nav-item"><a data-id="systemLog" href="javascript:void(0)">系统日志</a></li>
+                <li class="layui-nav-item"><a data-id="statAnalysis" href="javascript:void(0)">统计分析</a></li>
+            </ul>
+            <div id="collect" class="rightContent layui-hide">
+                <div class="table-title">
+                    <div class="layui-form" lay-filter="collect">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">企业名称：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="businessName" id="businessName"
+                                   class="layui-input"/>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属街道：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="streetId" id="streetId" lay-filter="streetId">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属工业园：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="parkId" id="parkId" lay-filter="parkId">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search1">查询</button>
+                        <button class="layui-btn layui-btn-sm dub">授予称号</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table1" class="layui-table" lay-filter="table1"></div>
+                    <script type="text/html" id="seeDetails">
+                        <a class="layui-btn layui-btn-xs seeDetails" lay-event="seeDetails">详情</a>
+                    </script>
+                </div>
+            </div>
+            <div id="recheck" class="rightContent layui-hide">
+                <div class="table-title">
+                    <div class="layui-form" lay-filter="recheck">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">复审年份：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="year" id="year"
+                                   class="layui-input" />
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">企业名称：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="businessName2" id="businessName2"
+                                   class="layui-input" />
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属街道：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="streetId" id="streetId2" lay-filter="streetId2">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属工业园：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="parkId" id="parkId2" lay-filter="parkId2">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search2">查询</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table2" class="layui-table" lay-filter="table2"></div>
+                    <script type="text/html" id="recheckBtn">
+                        {{#  if(d.reviewResult >= 0){ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="seeDetails2">详情</a>
+                        {{#  } else { }}
+                        <a class="layui-btn layui-btn-xs" lay-event="reAssess">复审</a>
+                        {{#  } }}
+                    </script>
+                </div>
+            </div>
+            <div id="account" class="rightContent layui-hide">
+                <div class="table-title">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户ID：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="userId" id="userID"
+                                   class="layui-input" />
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户名：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="userName" id="user"
+                                   class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search3">查询</button>
+                        <button class="layui-btn layui-btn-sm add3">新增</button>
+                        <button class="layui-btn layui-btn-sm modify3">修改</button>
+                        <button class="layui-btn layui-btn-sm delete3">删除</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table3" class="layui-table" lay-filter="table3"></div>
+                </div>
+            </div>
+            <div id="accountTimeLimit" class="rightContent layui-hide">
+                <div class="table-title">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">角色名称：</label>
+                            <input type="text" placeholder="请输入" name="roleName" id="roleName" class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search4">查询</button>
+                        <button class="layui-btn layui-btn-sm modify">修改</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table4" class="layui-table" lay-filter="table4"></div>
+                </div>
+            </div>
+            <div id="systemMsg" class="rightContent layui-hide">
+                <div id="editor"></div>
+                <div class="systemMsgBtn">
+                    <button class="layui-btn layui-btn-sm systemMsgSave">保存</button>
+                </div>
+            </div>
+            <div id="systemLog" class="rightContent layui-hide">
+                <div class="table-title">
+                    <div class="layui-form">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">操作者ID：</label>
+                            <input type="text" placeholder="请输入"name="operatorId" id="operatorId" class="layui-input"/>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">操作时间：</label>
+                            <input type="text" placeholder="请输入" name="userId" id="startTime" class="layui-input" />&nbsp; ~ &nbsp;
+                            <input type="text" placeholder="请输入" name="userId" id="endTime" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search5">查询</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table5" class="layui-table" lay-filter="table5"></div>
+                </div>
+            </div>
+            <div id="statAnalysis" class="rightContent layui-hide">
+                <div id="chartsTitle">
+                    <ul class="layui-nav" lay-filter="">
+                        <li class="layui-nav-item layui-this"><a href="javascript:void(0);">总得分分布</a></li>
+                        <li class="layui-nav-item"><a href="javascript:void(0);">分组统计</a></li>
+                        <li class="layui-nav-item"><a href="javascript:void(0);">对标分析1</a></li>
+                        <li class="layui-nav-item"><a href="javascript:void(0);">对标分析2</a></li>
+                    </ul>
+                    <div class="layui-form" lay-filter="analysis">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分值类型：</label>
+                            <div class="selectCon">
+                                <select name="userType" id="valueType" lay-filter="valueType">
+                                    <option value="1" selected>自评</option>
+                                    <option value="2">测评</option>
+                                    <option value="3">评定</option>
+                                    <option value="4">复审</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item anYear layui-hide">
+                            <label class="layui-form-label">年份：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="allYear" id="allYear"
+                                   class="layui-input" />
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">分析对象：</label>
+                            <div class="selectCon objSelect">
+                                <select name="object" id="object" lay-filter="object">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">企业性质：</label>
+                            <div class="selectCon siteSelect">
+                                <select name="businessType" id="businessType" lay-filter="businessType">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属行业：</label>
+                            <div class="selectCon industrySelect">
+                                <select name="industryInclude" id="industryInclude" lay-filter="industryInclude">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">统计指标：</label>
+                            <!--指标选择改成下拉选择树（多选、并且级联选择），不选时计算总分-->
+                            <div class="selectCon indexSelect">
+                                <select name="indexTree" id="indexTree" lay-filter="indexTree">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item itemClass layui-hide">
+                            <label class="layui-form-label">分组类别：</label>
+                            <div class="selectCon">
+                                <select name="anClass" id="anClass" lay-filter="anClass">
+                                    <option value="street" selected>按街道</option>
+                                    <option value="industrialPark">按工业园</option>
+                                    <option value="siteType">按企业性质</option>
+                                    <option value="industryType">按所属行业</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="layui-btn layui-btn-sm search6">查询</button>
+                </div>
+                <div id="chart-content">
+                    <div id="chart1" style="width:100%;height:100%"></div>
+                    <div id="chart2" style="width:60%;height:100%"></div>
+                    <div id="pie" style="width:40%;height:100%"></div>
+                    <div id="chart3" style="width:100%;height:100%"></div>
+                    <div id="chart4" style="width:100%;height:100%"></div>
+                </div>
+                <div class="tableAn"><div id="tableAna" lay-filter="tableAna"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/public/editSelect/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/public/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/public/wangEditor-3.1.1/release/wangEditor.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.core.js}"></script>
+    <!--如果需要用到 编辑功能 或 checkbox / radio 还需要分别加载-->
+    <script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.excheck.js}"></script>
+    <script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.exedit.js}"></script>
+
+    <script type="text/javascript" th:src="@{/public/echarts4/echarts.min.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/main.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/committee.js}"></script>
+
+    <!--授予称号-->
+    <div class="layui-form layui-hide" id="dubbed" lay-filter="dubbed">
+        <div class="dubContent">
+            <div>
+                将授予以下单位
+                <div class="selectCon">
+                    <select name="dub" id="dub" lay-filter="dub">
+
+                    </select>
+                </div>
+                的称号：
+            </div>
+            <ul id="siteList"></ul>
+        </div>
+    </div>
+
+    <!--xxx详情-->
+    <div class="layui-hide" id="committeeDetail">
+        <div class="tableConent">
+            <div id="tableCon1"><!--汇总 详情-->
+                <div id="diaTable1" class="layui-table layui-hide" lay-filter="diaTable1"></div>
+                <script type="text/html" id="downloadBtn1">
+                    {{#  if(d.fileNames?d.fileNames.length>0:false){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="downloadFile1">下载</a>
+                    {{#  } }}
+                </script>
+            </div>
+            <div id="tableCon2"><!--复审 详情-->
+                <div id="diaTable2" class="layui-table layui-hide" lay-filter="diaTable2"></div>
+            </div>
+            <div id="tableCon3"><!--复审 复审-->
+                <div id="diaTable3" class="layui-table layui-hide" lay-filter="diaTable3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--账号管理 新增账号-->
+    <div class="layui-form layui-hide" id="addAccount" lay-filter="addAccount">
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户ID:</label>
+            <div class="layui-input-block">
+                <input type="text" name="accountId" id="accountId" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名:</label>
+            <div class="layui-input-block">
+                <input type="text" name="accountName" id="accountName" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码:</label>
+            <div class="layui-input-block">
+                <input type="password" name="accountPwd" id="accountPwd" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="accountConfirmPwd" id="accountConfirmPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属角色:</label>
+            <div class="selectCon accountRole">
+                <select name="accountRole" id="accountRole" lay-filter="accountRole">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item accountTown">
+            <label class="layui-form-label">所属镇(街道):</label>
+            <div class="selectCon">
+                <select name="accountTown" id="accountTown" lay-filter="accountTown">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注:</label>
+            <div class="layui-input-block">
+                <textarea name="accountMemo" id="accountMemo" required  lay-verify="required" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!--账号时限管理 修改-->
+    <div class="layui-form layui-hide" id="timeLimitChange" lay-filter="timeLimitChange">
+        <div class="layui-form-item">
+            <label class="layui-form-label">开始日期:</label>
+            <div class="layui-input-block">
+                <input type="text" name="startDate" id="startDate" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束日期:</label>
+            <div class="layui-input-block">
+                <input type="text" name="endDate" id="endDate" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">备注:</label>
+            <div class="layui-input-block">
+                <textarea name="memo" id="memo" required  lay-verify="required" placeholder="请输入内容" class="layui-textarea"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!--修改密码-->
+    <form class="layui-form layui-hide" id="changePwd" action="" style="padding:20px 20px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="oldPwd" id="oldPwd" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="newPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="confirmPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+
+</body>
+</html>

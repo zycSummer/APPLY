@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.cloud.jetsndcxqyapply.mapper.AnalysisMapper">
+
+    <select id="getStreetAndIndustry" resultMap="street">
+        SELECT tss.`street_id`,tss.`street_name`,tss.`street_id` value
+        FROM tb_sys_street tss
+    </select>
+
+    <select id="getIndustry" resultMap="industry">
+        SELECT t.`park_id`,t.`park_name`,t.street_id, CONCAT(t.`park_id`,t.street_id) value
+        FROM tb_sys_industrial_park t where t.street_id=#{street_id}
+    </select>
+
+    <resultMap id="street" type="com.jet.cloud.jetsndcxqyapply.entity.SysStreet2">
+        <result column="street_id" property="streetId"/>
+        <result column="street_name" property="name"/>
+        <collection column="street_id" property="children" select="getIndustry"/>
+    </resultMap>
+
+    <resultMap id="industry" type="com.jet.cloud.jetsndcxqyapply.entity.SysIndustrialPark2">
+        <result column="park_id" property="parkId"/>
+        <result column="park_name" property="name"/>
+        <result column="street_id" property="streetId"/>
+    </resultMap>
+
+    <select id="getTbSySSiteType" resultType="map">
+        SELECT type_id typeId,type_name typeName FROM tb_sys_site_type
+    </select>
+
+    <select id="screeningEnterprises" parameterType="map" resultType="map">
+        SELECT
+        ts.site_id siteId
+        FROM
+        tb_site ts,<!--企业信息-->
+        tb_site_application tsa, <!--企业申报信息表-->
+        <if test="flag != null and flag!='' and flag=='4'.toString() ">
+            tb_site_review tsr, <!--企业年度复审信息表-->
+        </if>
+        tb_sys_street tss, <!--所属镇(街道)-->
+        tb_sys_industrial_park tsip <!--所属工业园-->
+        <where>
+            ts.`site_id`=tsa.`site_id`
+            and ts.`site_id`=tsa.`site_id`
+            AND tss.`street_id` = ts.`street_id`
+            AND tsip.`park_id` = ts.`park_id`
+            <if test="flag != null and flag!='' and flag=='1'.toString() ">
+                AND tsa.self_submit_time IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='2'.toString() ">
+                AND tsa.`street_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='3'.toString() ">
+                AND tsa.`district_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='4'.toString() ">
+                and tsr.site_id = ts.site_id
+                AND (tsa.`district_committee_time` IS NOT NULL AND YEAR=#{year} AND tsr.`review_result`='0')
+            </if>
+            <if test="typeId != null and typeId.size > 0">
+                <foreach collection="typeId" item="typeId" index="index" open="and ts.site_type_id in(" separator=","
+                         close=")">
+                    #{typeId}
+                </foreach>
+                <!-- AND ts.`site_type_id`=#{typeId}-->
+            </if>
+            <if test="industryInclude != null and industryInclude.size > 0">
+                <foreach collection="industryInclude" item="industryInclude" index="index" open="and ts.industry_type_id in(" separator=","
+                         close=")">
+                    #{industryInclude}
+                </foreach>
+                <!--  AND ts.`industry_type_id`=#{industryInclude}-->
+            </if>
+            <if test="streetId != null and streetId.size > 0 ">
+                <foreach collection="streetId" item="streetId" index="index" open="and ts.street_id in(" separator=","
+                         close=")">
+                    #{streetId}
+                </foreach>
+            </if>
+            <if test="parkId != null  and parkId.size > 0">
+                <foreach collection="parkId" item="parkId" index="index" open="and ts.`park_id` in(" separator=","
+                         close=")">
+                    #{parkId}
+                </foreach>
+            </if>
+            GROUP BY ts.`site_id`
+        </where>
+    </select>
+
+    <select id="sumScreeningEnterprises" parameterType="map" resultType="java.lang.Integer">
+        select count(*) from (
+        SELECT
+        ts.site_id siteId
+        FROM
+        tb_site ts,<!--企业信息-->
+        tb_site_application tsa, <!--企业申报信息表-->
+        <if test="flag != null and flag!='' and flag=='4'.toString() ">
+            tb_site_review tsr, <!--企业年度复审信息表-->
+        </if>
+        tb_sys_street tss, <!--所属镇(街道)-->
+        tb_sys_industrial_park tsip <!--所属工业园-->
+        <where>
+            ts.`site_id`=tsa.`site_id`
+            and ts.`site_id`=tsa.`site_id`
+            AND tss.`street_id` = ts.`street_id`
+            AND tsip.`park_id` = ts.`park_id`
+            <if test="flag != null and flag!='' and flag=='1'.toString() ">
+                AND tsa.self_submit_time IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='2'.toString() ">
+                AND tsa.`street_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='3'.toString() ">
+                AND tsa.`district_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='4'.toString() ">
+                and tsr.site_id = ts.site_id
+                AND (tsa.`district_committee_time` IS NOT NULL AND YEAR=#{year} AND tsr.`review_result`='0')
+            </if>
+            <if test="typeId != null and typeId.size > 0">
+                <foreach collection="typeId" item="typeId" index="index" open="and ts.site_type_id in(" separator=","
+                         close=")">
+                    #{typeId}
+                </foreach>
+                <!-- AND ts.`site_type_id`=#{typeId}-->
+            </if>
+            <if test="industryInclude != null and industryInclude.size > 0">
+                <foreach collection="industryInclude" item="industryInclude" index="index" open="and ts.industry_type_id in(" separator=","
+                         close=")">
+                    #{industryInclude}
+                </foreach>
+                <!--  AND ts.`industry_type_id`=#{industryInclude}-->
+            </if>
+            <if test="streetId != null and streetId.size > 0 ">
+                <foreach collection="streetId" item="streetId" index="index" open="and ts.street_id in(" separator=","
+                         close=")">
+                    #{streetId}
+                </foreach>
+            </if>
+            <if test="parkId != null  and parkId.size > 0 ">
+                <foreach collection="parkId" item="parkId" index="index" open="and ts.`park_id` in(" separator=","
+                         close=")">
+                    #{parkId}
+                </foreach>
+            </if>
+            GROUP BY ts.`site_id`
+        </where>
+        ) a
+    </select>
+
+    <select id="getNormal" resultType="map" parameterType="string">
+        SELECT
+            m.*,
+            SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue
+        FROM
+        (SELECT
+            t.site_id siteId,
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+            SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+            SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+            tb_site_application_index_value t
+        <where>
+            <foreach collection="list" item="siteId" index="index" open=" site_id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+        </where>
+        GROUP BY t.site_id
+        ) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        GROUP BY m.`siteId`
+    </select>
+
+    <select id="getNormalByNoGroup" resultType="map" parameterType="string">
+        SELECT
+        m.*,
+        SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue
+        FROM
+        (SELECT
+        t.site_id siteId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+        tb_site_application_index_value t
+        <where>
+            <foreach collection="list" item="siteId" index="index" open=" site_id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+        </where>
+        <!--GROUP BY t.site_id-->
+        ) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        GROUP BY m.`siteId`
+    </select>
+
+    <select id="getAllIndexId" parameterType="string" resultType="map">
+       SELECT
+            index_id,
+            index_name,
+            ( SELECT GROUP_CONCAT( index_id ) FROM tb_index WHERE parent_id = t.index_id ) AS sec,
+            `max`
+            FROM
+            tb_index t
+            <where>
+                 `max` is not null
+                <foreach collection="list" item="indexIds" index="index" open=" and index_id in(" separator="," close=")">
+                    #{indexIds}
+                </foreach>
+            </where>
+    </select>
+
+    <select id="getIndexScore" resultType="map" parameterType="string">
+        SELECT s.* from
+        (SELECT
+            m.*,
+            SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue
+        FROM
+        (SELECT
+        t.site_id siteId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+        tb_site_application_index_value t
+        <where>
+            <foreach collection="indexList" item="indexId" index="index" open=" index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+        GROUP BY t.site_id
+        ) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        GROUP BY m.`siteId`) s
+        <where>
+            <foreach collection="siteList" item="siteId" index="index" open=" s.siteId in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getIndexScoreByNoGroup" resultType="map" parameterType="string">
+        SELECT
+            SUM(CAST(IFNULL(s.selfValue, 0 ) AS DECIMAL (8, 1))) selfValue,
+            SUM(CAST(IFNULL(s.streetValue, 0 ) AS DECIMAL (8, 1))) streetValue,
+            SUM(CAST(IFNULL(s.districtValue, 0 ) AS DECIMAL (8, 1))) districtValue,
+            SUM(CAST(IFNULL(s.reviewValue, 0 ) AS DECIMAL (8, 1))) reviewValue
+        from
+        (SELECT
+        m.*,
+        SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue
+        FROM
+        (SELECT
+        t.site_id siteId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+        tb_site_application_index_value t
+        <if test="indexList != null and indexList.size > 0">
+            <where>
+                <foreach collection="indexList" item="indexId" index="index" open=" index_id in(" separator="," close=")">
+                    #{indexId}
+                </foreach>
+            </where>
+        </if>
+        GROUP BY t.site_id
+        ) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        GROUP BY m.`siteId`) s
+        <if test="siteList != null and siteList.size > 0">
+            <where>
+                <foreach collection="siteList" item="siteId" index="index" open=" s.siteId in(" separator="," close=")">
+                    #{siteId}
+                </foreach>
+            </where>
+        </if>
+    </select>
+
+    <select id="getIndexModeNumberSelfValue" resultType="map" parameterType="map">
+        SELECT
+            max(n.selfValue) selfValue
+        from
+        (select q.selfValue selfValue,
+                q.streetValue streetValue,
+                q.districtValue districtValue,
+                q.reviewValue
+        from
+        (
+         SELECT s.* from
+            (SELECT
+            m.*,
+            SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue
+            FROM
+            (SELECT
+            t.site_id siteId,
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+            SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+            SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+            FROM
+            tb_site_application_index_value t
+            <where>
+                <foreach collection="indexList" item="indexId" index="index" open=" index_id in(" separator="," close=")">
+                    #{indexId}
+                </foreach>
+            </where>
+            GROUP BY t.site_id
+            ) m
+            LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+            GROUP BY m.`siteId`) s
+            <where>
+                <foreach collection="siteList" item="siteId" index="index" open=" s.siteId in(" separator="," close=")">
+                    #{siteId}
+                </foreach>
+            </where> ) q
+        group by q.selfValue) n
+    </select>
+
+    <select id="screeningEnterprises2" parameterType="map" resultType="map">
+        SELECT
+        count( 1 ) count,
+        GROUP_CONCAT(ts.site_id) siteId
+        FROM
+        tb_site ts,<!--企业信息-->
+        tb_site_application tsa, <!--企业申报信息表-->
+        <if test="flag != null and flag!='' and flag=='4'.toString() ">
+            tb_site_review tsr, <!--企业年度复审信息表-->
+        </if>
+        tb_sys_street tss, <!--所属镇(街道)-->
+        tb_sys_industrial_park tsip, <!--所属工业园-->
+        tb_sys_site_type tsst,<!--企业类型-->
+        tb_sys_industry_type tsit <!--所属行业-->
+        <where>
+            ts.`site_id`=tsa.`site_id`
+            and ts.`site_id`= tsa.`site_id`
+            AND tss.`street_id` = ts.`street_id`
+            AND tsip.`park_id` = ts.`park_id`
+            and tsst.type_id = ts.`site_type_id`
+            and tsit.type_id = ts.`industry_type_id`
+            <if test="flag != null and flag!='' and flag=='1'.toString() ">
+                AND tsa.self_submit_time IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='2'.toString() ">
+                AND tsa.`street_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='3'.toString() ">
+                AND tsa.`district_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='4'.toString() ">
+                and tsr.site_id = ts.site_id
+                AND (tsa.`district_committee_time` IS NOT NULL AND YEAR=#{year} AND tsr.`review_result`='0')
+            </if>
+            <if test="typeId != null and typeId.size > 0">
+                <foreach collection="typeId" item="typeId" index="index" open="and ts.site_type_id in(" separator=","
+                         close=")">
+                    #{typeId}
+                </foreach>
+               <!-- AND ts.`site_type_id`=#{typeId}-->
+            </if>
+            <if test="industryInclude != null and industryInclude.size > 0">
+                <foreach collection="industryInclude" item="industryInclude" index="index" open="and ts.industry_type_id in(" separator=","
+                         close=")">
+                    #{industryInclude}
+                </foreach>
+                <!--  AND ts.`industry_type_id`=#{industryInclude}-->
+            </if>
+            <if test="streetId != null and streetId.size > 0 ">
+                <foreach collection="streetId" item="streetId" index="index" open="and ts.street_id in(" separator=","
+                         close=")">
+                    #{streetId}
+                </foreach>
+            </if>
+            <if test="parkId != null and parkId.size > 0 ">
+                <foreach collection="parkId" item="parkId" index="index" open="and ts.`park_id` in(" separator=","
+                         close=")">
+                    #{parkId}
+                </foreach>
+            </if>
+            <choose>
+                <when test="groupingOption=='street'">
+                    GROUP BY ts.`street_id`
+                </when>
+                <when test="groupingOption=='industrialPark'">
+                    GROUP BY ts.`park_id`
+                </when>
+                <when test="groupingOption=='siteType'">
+                    GROUP BY ts.`site_type_id`
+                </when>
+                <when test="groupingOption=='industryType'">
+                    GROUP BY ts.`industry_type_id`
+                </when>
+                <otherwise>
+                    GROUP BY ts.`site_id`
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="getSiteAllName" parameterType="string" resultType="map">
+        SELECT
+            ts.site_id siteId,
+            ts.street_id streetId,
+            tss.street_name streetName,
+            tsip.park_name parkName,
+            tsst.type_name typeName,
+            tsit.type_name inTypeName
+        FROM
+            tb_site ts,
+            tb_sys_industrial_park tsip,
+            tb_sys_street tss,
+            tb_sys_site_type tsst,
+            tb_sys_industry_type tsit
+        <where>
+            tsip.`park_id` = ts.`park_id`
+            AND tsst.type_id = ts.`site_type_id`
+            AND tss.`street_id` = ts.`street_id`
+            AND tsit.type_id = ts.`industry_type_id`
+            <foreach collection="list" item="siteIds" index="index" open="and ts.`site_id` in(" separator=","
+                     close=")">
+                #{siteIds}
+            </foreach>
+        </where>
+    </select>
+
+    <!--<select id="screeningEnterprises2" parameterType="map" resultType="map">
+        SELECT
+            count( 1 ) count,
+            GROUP_CONCAT(ts.site_id) siteId,
+            ts.site_name siteName,
+            ts.street_id streetId,
+            tss.street_name streetName,
+            tsip.park_name parkName,
+            tsst.type_name typeName,
+            tsit.type_name inTypeName
+        FROM
+            tb_site ts,&lt;!&ndash;企业信息&ndash;&gt;
+            tb_site_application tsa, &lt;!&ndash;企业申报信息表&ndash;&gt;
+             <if test="flag != null and flag!='' and flag=='4'.toString() ">
+                tb_site_review tsr, &lt;!&ndash;企业年度复审信息表&ndash;&gt;
+             </if>
+            tb_sys_street tss, &lt;!&ndash;所属镇(街道)&ndash;&gt;
+            tb_sys_industrial_park tsip, &lt;!&ndash;所属工业园&ndash;&gt;
+            tb_sys_site_type tsst,&lt;!&ndash;企业类型&ndash;&gt;
+            tb_sys_industry_type tsit &lt;!&ndash;所属行业&ndash;&gt;
+        <where>
+            ts.`site_id`=tsa.`site_id`
+            and ts.`site_id`= tsa.`site_id`
+            AND tss.`street_id` = ts.`street_id`
+            AND tsip.`park_id` = ts.`park_id`
+            and tsst.type_id = ts.`site_type_id`
+            and tsit.type_id = ts.`industry_type_id`
+            <if test="flag != null and flag!='' and flag=='1'.toString() ">
+                AND tsa.self_submit_time IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='2'.toString() ">
+                AND tsa.`street_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='3'.toString() ">
+                AND tsa.`district_submit_time` IS NOT NULL
+            </if>
+            <if test="flag != null and flag!='' and flag=='4'.toString() ">
+                and tsr.site_id = ts.site_id
+                AND (tsa.`district_committee_time` IS NOT NULL AND YEAR=#{year} AND tsr.`review_result`='0')
+            </if>
+            <if test="typeId != null and typeId!=''">
+                AND ts.`site_type_id`=#{typeId}
+            </if>
+            <if test="industryInclude != null and industryInclude!=''">
+                AND ts.`industry_type_id`=#{industryInclude}
+            </if>
+            <if test="streetId != null and streetId.size > 0 ">
+                <foreach collection="streetId" item="streetId" index="index" open="and ts.street_id in(" separator=","
+                         close=")">
+                    #{streetId}
+                </foreach>
+            </if>
+            <if test="parkId != null and parkId.size > 0 ">
+                <foreach collection="parkId" item="parkId" index="index" open="and ts.`park_id` in(" separator=","
+                         close=")">
+                    #{parkId}
+                </foreach>
+            </if>
+            <choose>
+                <when test="groupingOption=='street'">
+                    GROUP BY ts.`street_id`
+                </when>
+                <when test="groupingOption=='industrialPark'">
+                    GROUP BY ts.`park_id`
+                </when>
+                <when test="groupingOption=='siteType'">
+                    GROUP BY ts.`site_type_id`
+                </when>
+                <when test="groupingOption=='industryType'">
+                    GROUP BY ts.`industry_type_id`
+                </when>
+                <otherwise>
+                    GROUP BY ts.`site_id`
+                </otherwise>
+            </choose>
+        </where>
+    </select>-->
+
+    <select id="getCountHarmoniousEnterprise" resultType="string" parameterType="string">
+        select count(1) count from
+        (select count(1) count
+            from tb_site_application
+        <where>
+            <foreach collection="list" item="siteId" index="index" open=" site_Id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+            and district_committee_title='1001'
+        </where>
+        GROUP BY site_id) a
+    </select>
+
+    <select id="getCountAdvancedEnterprise" resultType="string" parameterType="string">
+        select count(1) count from
+        (select count(1) count
+            from tb_site_application
+        <where>
+            <foreach collection="list" item="siteId" index="index" open=" site_Id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+            and district_committee_title='1002'
+        </where>
+        GROUP BY site_id) a
+    </select>
+
+    <select id="getIndexOne" resultType="map">
+        select
+            index_id indexId,
+            index_name indexName
+        from tb_index
+        where parent_id is null
+    </select>
+
+    <select id="getIndexAll" resultType="map" parameterType="string">
+        SELECT
+            index_id indexId,
+            index_name indexName,
+            `max`
+        FROM
+            tb_index t
+        <where>
+            <foreach collection="list" item="indexId" index="index" open=" index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getIndexAllStandardSum" resultType="java.lang.Double" parameterType="string">
+        SELECT
+             SUM(CAST(IFNULL(max,0) AS DECIMAL(8,1))) `max`
+        FROM
+        tb_index t
+        <where>
+            <foreach collection="list" item="indexId" index="index" open=" index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getIndexAllSum" resultType="map" parameterType="map">
+        SELECT sum(a.selfValue) selfValue,
+               sum(a.selfValue) streetValue,
+               sum(a.districtValue) districtValue,
+               sum(a.reviewValue) reviewValue
+        FROM
+        ( SELECT m.*,SUM(CAST(IFNULL(tsri.review_value, 0 ) AS DECIMAL (8, 1))) reviewValue FROM
+        (SELECT
+        t.site_id siteId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM
+        tb_site_application_index_value t
+        <where>
+            <foreach collection="siteList" item="siteId" index="index" open=" t.site_id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+
+            <foreach collection="indexList" item="indexId" index="index" open=" and t.index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+        GROUP BY site_id) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        <foreach collection="indexList" item="indexId" index="index" open=" and tsri.index_id in(" separator="," close=")">
+            #{indexId}
+        </foreach>
+        GROUP BY m.`siteId`) a
+    </select>
+
+    <select id="getIndexById" resultType="string" parameterType="string">
+       select index_name indexName from tb_index where index_id=#{indexId}
+    </select>
+
+    <select id="getParentId" resultType="map" parameterType="string">
+        select
+            index_id indexId,
+            index_name indexName
+        from tb_index
+        <where>
+            parent_id is not null
+             and index_id = #{indexId}
+        </where>
+    </select>
+
+    <select id="getSonIndexId" resultType="map" parameterType="string">
+        SELECT
+            index_id,
+            index_name,
+            ( SELECT GROUP_CONCAT( index_id ) FROM tb_index WHERE parent_id = t.index_id ) AS sec,
+            `max`
+        FROM
+            tb_index t
+        <where>
+            index_id = #{indexId}
+        </where>
+    </select>
+
+    <select id="getIndexIdList" resultType="map" parameterType="string">
+        SELECT
+        index_id indexId,
+        index_name indexName,
+        max `max`
+        FROM
+        tb_index t
+        <where>
+            <foreach collection="list" item="indexId" index="index" open="t.index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="getTwoByThreeIndexId" resultType="map" parameterType="string">
+        SELECT a.parent_id parentId,GROUP_CONCAT(a.index_id) sec
+        from
+        (   SELECT
+             *
+            FROM
+            tb_index t
+        <where>
+            t.parent_id in ( SELECT index_id FROM tb_index )
+            and t.max is not null
+            <foreach collection="list" item="indexId" index="index" open=" and t.index_id in(" separator="," close=")">
+                #{indexId}
+            </foreach>
+        </where>
+            group by t.index_id) a
+        group by a.parent_id
+    </select>
+
+    <select id="getIndexNameByIndexId" resultType="string" parameterType="string">
+        SELECT
+            index_name indexName
+        FROM
+        tb_index t
+        where t.index_id=#{indexId}
+    </select>
+</mapper>

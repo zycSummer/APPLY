@@ -1,0 +1,298 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+    margin: 0;
+    padding: 0;
+}
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+.login_face{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: center;
+    border-bottom: 5px solid #db2012;
+}
+.login_face>div{
+    height:130px;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+.login_face>div img{
+    height:100%;
+}
+.login_face>h2{
+    width:870px;
+    margin-top:20px;
+    margin-bottom:20px;
+    text-align:center;
+    font-size:3rem;
+    font-weight: bold;
+    vertical-align: center;
+    color:#006ebf;
+}
+
+/*用户登录 start 1150*/
+#loginMain{
+    padding-top:30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: center;
+}
+#loginMain #message{
+    width:30%;
+    margin-right:100px;
+}
+#loginMain #message h3 span{
+    display:inline-block;
+    padding:5px 25px;
+    background: -webkit-linear-gradient(#fda0a1, #c31213); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#fda0a1, #c31213); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#fda0a1, #c31213); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#fda0a1, #c31213); /* 标准的语法 */
+}
+#loginMain #message h3{
+    color:#fff;
+    border-bottom: 3px solid #c31213;
+}
+#loginMain #systemPrompt{
+    margin-top:20px;
+    line-height: 25px;
+}
+#loginMain .layui-form{
+    width:358px;
+}
+#loginMain .layui-form h3{
+    height:31px;
+    line-height: 32px;
+    text-align: center;
+    color:#c31213;
+    font-weight:bold;
+    border-bottom: 3px solid #c31213;
+}
+#loginMain .layui-form .formContent{
+    margin-top:20px;
+}
+#loginMain .layui-form .layui-input,.userType{
+    width:230px;
+}
+#loginMain #verify{
+    display: inline-block;
+    width:130px;
+}
+#loginMain #imgCode{
+    cursor: pointer;
+    float: right;
+    display:inline-block;
+}
+#loginMain #login{
+    background-color: #c41415;
+}
+#loginMain .btnGroup{
+    text-align:right;
+}
+#reginBtn{
+    display: inline-block;
+    margin-right:10px;
+}
+/*用户登录 end*/
+
+/*用户注册 start 1150*/
+#register{
+    padding-top:30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: center;
+}
+#register .flatType{
+    width:555px;
+    height:400px;
+    text-algin:center;
+    border-right:1px dotted #666;
+}
+#register .flatType h3{
+    margin-top:20px;
+    font-size:1rem;
+    font-weight: bold;
+    text-align: center;
+}
+#register .flatType .layui-form{
+    margin-top:10px;
+    text-align: center;
+}
+#register .reginForm{
+    width:685px;
+    height:750px;
+    margin-left:40px;
+    overflow:auto;
+}
+#register .layui-form-item{
+    margin-bottom: 1px;
+}
+#register .reginForm .layui-form-label{
+    white-space: nowrap;
+    text-align: left;
+}
+#register .reginForm .layui-form-item>.layui-input,.selectCon{
+    height:30px;
+    width:345px;
+}
+.selectCon .layui-input{
+    height:30px;
+}
+.upload{
+    width:345px;
+    height:30px;
+    line-height: 30px;
+    background-color: #fff;
+    color:#666;
+    outline:1px solid #dbdbdb;
+}
+.upload:hover{
+    color: #666;
+    outline:1px solid #999;
+}
+#register .layui-upload{
+    position:relative;
+}
+.message{
+    display: inline-block;
+    color:red;
+    position:absolute;
+}
+#demo1{
+    width:100%;
+    height:20px;
+    overflow: hidden;
+}
+#demo1 .layui-upload-img{
+    margin-right:10px;
+    border:1px solid #bbb;
+    height:100%;
+}
+.reBtn{
+    text-align: center;
+    margin:10px 0;
+}
+.reBack{
+    width:120px;
+    height:30px;
+    line-height: 30px;
+    background-color: #fff;
+    color:#c41415;
+    outline:1px solid #c41415;
+}
+.reBack:hover{
+    color: #c41415;
+    outline:1px solid #c41415;
+}
+.reSubmit{
+    width:120px;
+    height:30px;
+    line-height: 30px;
+    background-color: #c41415;
+}
+/*用户注册 end*/
+
+/*忘记密码 start 1150*/
+#forgetPwd{
+    padding-top:30px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+#forgetPwd .process{
+    width:950px;
+    margin:0 auto;
+    border-bottom:1px solid #eaeaea;
+}
+#forgetPwd .layui-nav{
+    padding:0px;
+    background-color: #fff;
+}
+#forgetPwd .layui-nav-item{
+    line-height: 40px;
+}
+#forgetPwd .layui-nav li a{
+    padding:4px 40px;
+    font-size: 1.2rem;
+    color:#000;
+}
+#forgetPwd .layui-nav li:hover a{
+    /*color:#4da48f;*/
+    cursor: default;
+}
+#forgetPwd .layui-nav .layui-this a{
+    color: #4da48f;
+}
+#forgetPwd .layui-nav .layui-this:after{
+    bottom:-2px;
+    height: 3px;
+}
+#forgetPwd .layui-form{
+    width:950px;
+    margin:40px auto;
+}
+#forgetPwd .layui-form .layui-input{
+    width:345px;
+    display: inline-block;
+}
+.foBtn{
+    margin-top:80px;
+    padding:30px 0;
+    border-top: 1px solid #eaeaea;
+    text-align: right;
+}
+/*忘记密码 end*/
+@media screen and (min-width: 850px) and (max-width:998px){
+    .login_face>h2{
+        font-size:2.5rem;
+    }
+}
+@media screen and (max-width:850px){
+    .login_face>h2{
+        font-size:2rem;
+    }
+    .login_face>div{
+        height:90px;
+        margin-top:20px;
+        margin-bottom:20px;
+    }
+}
+@media screen and (min-width: 852px) and (max-width:972px){
+    #forgetPwd .process{
+        width:650px;
+    }
+    #forgetPwd .layui-form{
+        width:650px;
+    }
+}
+@media screen and (max-width:852px){
+    #forgetPwd .process{
+        width:80%;
+    }
+    #forgetPwd .layui-form{
+        width:80%;
+    }
+}

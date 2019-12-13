@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.cloud.jetsndcxqyapply.mapper.DistrictCommitteeMapper">
+
+    <select id="getAllDistrictCommittee" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM (
+        SELECT s.site_id siteId,
+        s.site_name siteName,
+        p.`park_name` parkName,
+        t.`street_Name` streetName,
+        tsa.street_submit_time streetSumbitTime,
+        tsa.district_submit_time districtSubmitTime,
+        IFNULL(tsa.street_suggestion,'') streetSuggestion,
+        IFNULL(tsa.district_suggestion,'') districtSuggestion,
+        IFNULL(tsa.district_committee_title,'') districtCommitteeTitle,
+        IFNULL(tsa.district_committee_time,'') districtCommitteeTime,
+        IFNULL(tsa.district_committee_user_id,'') districtCommitteeUserId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS
+        DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR
+        street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1)))
+        districtValue
+        FROM tb_site s
+        LEFT JOIN tb_sys_industrial_park p ON s.`park_id` = p.`park_id`
+        LEFT JOIN tb_sys_street t ON s.`street_id` = t.`street_id`
+        LEFT JOIN tb_site_application_index_value v ON s.`site_id` = v.`site_id`
+        LEFT JOIN tb_site_application tsa ON s.`site_id`=tsa.site_id
+        <where>
+            tsa.self_submit_time IS NOT NULL
+            and tsa.street_submit_time is not null
+            and tsa.district_submit_time is not null
+            and p.street_id = t.street_id
+            <if test="streetId != null and streetId!='' ">
+                AND t.street_id =#{streetId}
+            </if>
+            <if test="parkId != null  and parkId!='' ">
+                and p.`park_id` =#{parkId}
+            </if>
+            <if test="siteName != null and siteName!='' ">
+                and s.site_name like CONCAT('%',#{siteName},'%')
+            </if>
+        </where>
+        GROUP BY s.`site_id`
+        ORDER BY districtValue,streetValue,selfValue DESC) a
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="getDistrictCommitteeSum" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1) FROM (
+        SELECT s.site_id siteId,
+        s.site_name siteName,
+        p.`park_name` parkName,
+        t.`street_Name` streetName,
+        tsa.street_submit_time streetSumbitTime,
+        tsa.district_submit_time districtSubmitTime,
+        tsa.district_committee_title districtCommitteeTitle,
+        tsa.district_committee_time districtCommitteeTime,
+        tsa.district_committee_user_id districtCommitteeUserId,
+        IFNULL(tsa.street_suggestion,'') streetSuggestion,
+        IFNULL(tsa.district_suggestion,'') districtSuggestion,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS
+        DECIMAL(8,1))) streetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR
+        street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1)))
+        districtValue
+        FROM tb_site s
+        LEFT JOIN tb_sys_industrial_park p ON s.`park_id` = p.`park_id`
+        LEFT JOIN tb_sys_street t ON s.`street_id` = t.`street_id`
+        LEFT JOIN tb_site_application_index_value v ON s.`site_id` = v.`site_id`
+        LEFT JOIN tb_site_application tsa ON s.`site_id`=tsa.site_id
+        <where>
+            tsa.self_submit_time is not null
+            and tsa.street_submit_time is not null
+            and tsa.district_submit_time is not null
+            and p.street_id = t.street_id
+            <if test="streetId != null and streetId!='' ">
+                AND t.street_id =#{streetId}
+            </if>
+            <if test="parkId != null and parkId!='' ">
+                and p.`park_id` =#{parkId}
+            </if>
+            <if test="siteName != null and siteName!='' ">
+                and s.site_name like CONCAT('%',#{siteName},'%')
+            </if>
+        </where>
+        GROUP BY s.`site_id`
+        ORDER BY districtValue,streetValue,selfValue DESC) a
+    </select>
+
+    <select id="getTbSysTitle" resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSysTitle">
+        SELECT * FROM tb_sys_title
+    </select>
+
+    <select id="getTbSysTitleByTitleId" resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSysTitle"
+            parameterType="string">
+        SELECT * FROM tb_sys_title where title_id=#{titleId}
+    </select>
+
+    <select id="getAllReviewDistrictCommittee" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * from
+        (SELECT
+            n.siteId,
+            n.siteName,
+            n.parkName,
+            n.parkId,
+            n.streetName,
+            n.streetId,
+            n.districtCommitteeTitle,
+            n.districtCommitteeTime,
+            n.districtCommitteeUserId,
+            n.year 'year',
+            n.streetReviewResult,
+            n.districtReviewResult,
+            n.reviewResult reviewResult,
+            n.selfValue,
+            n.streetSuggestion,
+            n.districtSuggestion,
+            SUM(CAST(IFNULL(n.street_review_value, 0 ) AS DECIMAL ( 8, 1 ) ) ) streetReviewValue,
+            SUM(CAST(IFNULL( CASE WHEN (n. district_review_value = '' OR n.district_review_value IS NULL ) THEN n.street_review_value ELSE n.district_review_value END, 0 ) AS DECIMAL (8,1))) districtReviewValue,
+            SUM(CAST(IFNULL(CASE WHEN (n.review_value ='' OR n.review_value IS NULL) THEN (CASE WHEN (n.district_review_value='' OR n.district_review_value IS NULL) THEN n.street_review_value ELSE n.district_review_value END) ELSE n.review_value END,0) AS DECIMAL(8,1))) reviewValue
+        from
+        (SELECT
+            m.*,
+            tsr.year,
+            tsr.review_result reviewResult,
+            tsr.street_review_result streetReviewResult,
+            tsr.district_review_result districtReviewResult,
+            tsriv.street_review_value,
+            tsriv.district_review_value,
+            tsriv.review_value
+            FROM
+            (
+            SELECT
+            ts.site_id siteId,
+            ts.site_name siteName,
+            p.`park_id` parkId,
+            p.`park_name` parkName,
+            t.`street_id` streetId,
+            t.`street_Name` streetName,
+            tsa.district_committee_title districtCommitteeTitle,
+            tsa.district_committee_time districtCommitteeTime,
+            tsa.district_committee_user_id districtCommitteeUserId,
+            IFNULL(tsa.street_suggestion,'') streetSuggestion,
+            IFNULL(tsa.district_suggestion,'') districtSuggestion,
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue
+            FROM
+            tb_site ts,
+            tb_site_application tsa,
+            tb_site_application_index_value tsai,
+            tb_sys_industrial_park p,
+            tb_sys_street t
+            WHERE
+            ts.site_id = tsa.site_id
+            AND ts.site_id = tsai.site_id
+            AND tsa.district_committee_title IS NOT NULL
+            AND ts.`park_id` = p.`park_id`
+            AND ts.`street_id` = t.`street_id`
+            <if test="streetId != null and streetId!='' ">
+                AND t.streetId =#{streetId}
+            </if>
+            <if test="parkId != null  and parkId!='' ">
+                AND p.`parkId` =#{parkId}
+            </if>
+            <if test="siteName != null and siteName!='' ">
+                AND ts.siteName LIKE CONCAT('%',#{siteName},'%')
+            </if>
+            GROUP BY
+            ts.site_id
+            ) m
+            JOIN tb_site_review_index_value tsriv ON m.siteId = tsriv.site_id
+            <if test="year != null and year!='' ">
+                AND tsriv.year =#{year}
+            </if>
+            JOIN tb_site_review tsr ON m.siteId = tsr.site_id
+            <if test="year != null and year!='' ">
+                AND tsr.year =#{year}
+            </if>
+            AND tsr.district_review_result = '1'
+            AND (tsr.review_result = '0' or substring_index( m.districtCommitteeTime, "-", 1 )=#{year})
+            GROUP BY
+            m.siteId,
+            tsriv.index_id) n
+            group by n.siteId ) h
+            ORDER BY h.reviewValue desc,h.districtReviewValue desc,h.streetReviewValue desc
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <!--<select id="getAllReviewDistrictCommittee" parameterType="java.util.Map" resultType="java.util.Map">
+        SELECT * FROM (
+        SELECT m.*
+        FROM
+        (
+        SELECT s.site_id siteId,
+            s.site_name siteName,
+            p.`park_id` parkId,
+            p.`park_name` parkName,
+            t.`street_id` streetId,
+            t.`street_Name` streetName,
+            tsa.street_submit_time streetSumbitTime,
+            tsa.district_submit_time districtSubmitTime,
+            tsa.district_committee_time districtCommitteeTime,
+            tsa.district_committee_user_id districtCommitteeUserId,
+
+            IFNULL(tsa.street_suggestion,'') streetSuggestion,
+            IFNULL(tsa.district_suggestion,'') districtSuggestion,
+            IFNULL(tsa.district_committee_title,'') districtCommitteeTitle,
+
+            SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue,
+            SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS DECIMAL(8,1))) streetValue,
+            SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1))) districtValue
+        FROM tb_site s
+            LEFT JOIN tb_sys_industrial_park p ON s.`park_id` = p.`park_id`
+            LEFT JOIN tb_sys_street t ON s.`street_id` = t.`street_id`
+            LEFT JOIN tb_site_application_index_value v ON s.`site_id` = v.`site_id`
+            LEFT JOIN tb_site_application tsa ON s.`site_id`=tsa.site_id
+        WHERE tsa.self_submit_time IS NOT NULL
+            AND tsa.street_submit_time IS NOT NULL
+            AND tsa.district_submit_time IS NOT NULL
+            AND p.street_id = t.street_id
+            and substring_index(tsa.district_committee_time,"-",1)=#{year1}
+        GROUP BY s.`site_id`) m
+        LEFT JOIN tb_site_review_index_value tsri ON tsri.site_id = m.siteId
+        LEFT JOIN tb_site_review tsr ON tsr.site_id = m.siteId
+
+        <where>
+            (tsr.review_result ='0' OR m.districtCommitteeTitle IS NOT NULL)
+            <if test="streetId != null and streetId!='' ">
+                AND m.streetId =#{streetId}
+            </if>
+            <if test="parkId != null  and parkId!='' ">
+                AND m.`parkId` =#{parkId}
+            </if>
+            <if test="siteName != null and siteName!='' ">
+                AND m.siteName LIKE CONCAT('%',#{siteName},'%')
+            </if>
+            <if test="year != null and year!='' ">
+                AND tsri.year =#{year}
+            </if>
+        </where>
+        GROUP BY m.`siteId`
+        ORDER BY m.districtValue,m.streetValue,m.selfValue DESC) a
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>-->
+
+    <select id="getReValueAndResult" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        ts.`year` year,
+        t.site_id siteId,
+        ts.review_result reviewResult,
+        SUM(CAST(IFNULL(street_review_value, 0 ) AS DECIMAL ( 8, 1 ) ) ) streetReviewValue,
+        SUM(CAST(IFNULL(CASE WHEN(district_review_value = '' OR district_review_value IS NULL ) THEN street_review_value ELSE district_review_value END, 0 ) AS DECIMAL (8,1))) districtReviewValue,
+        SUM(CAST(IFNULL(CASE WHEN (review_value ='' OR review_value IS NULL) THEN (CASE WHEN (district_review_value='' OR district_review_value IS NULL) THEN street_review_value ELSE district_review_value END) ELSE review_value END,0) AS DECIMAL(8,1))) reviewValue
+        FROM
+        tb_site_review_index_value t,
+        tb_site_review ts
+        <where>
+            t.`year` = ts.`year`
+            AND t.site_id = ts.site_id
+            AND t.YEAR = #{year}
+            <foreach collection="siteList" item="siteId" index="index" open="and t.site_id in(" separator="," close=")">
+                #{siteId}
+            </foreach>
+        </where>
+        GROUP BY t.site_id;
+    </select>
+
+    <select id="getByYearAndSiteId" resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue"
+            parameterType="map">
+        SELECT * FROM tb_site_review_index_value where year=#{year} and site_id=#{siteId}
+    </select>
+
+    <select id="getSumReviewDistrictCommittee" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT count(1) FROM (
+        SELECT * from
+        (SELECT
+        n.siteId,
+        n.siteName,
+        n.parkName,
+        n.parkId,
+        n.streetName,
+        n.streetId,
+        n.districtCommitteeTitle,
+        n.districtCommitteeTime,
+        n.districtCommitteeUserId,
+        n.year 'year',
+        n.streetReviewResult,
+        n.districtReviewResult,
+        n.reviewResult reviewResult,
+        n.selfValue,
+        SUM(CAST(IFNULL(n.street_review_value, 0 ) AS DECIMAL ( 8, 1 ) ) ) streetReviewValue,
+        SUM(CAST(IFNULL( CASE WHEN (n. district_review_value = '' OR n.district_review_value IS NULL ) THEN n.street_review_value ELSE n.district_review_value END, 0 ) AS DECIMAL (8,1))) districtReviewValue,
+        SUM(CAST(IFNULL(CASE WHEN (n.review_value ='' OR n.review_value IS NULL) THEN (CASE WHEN (n.district_review_value='' OR n.district_review_value IS NULL) THEN n.street_review_value ELSE n.district_review_value END) ELSE n.review_value END,0) AS DECIMAL(8,1))) reviewValue
+        from
+        (SELECT
+        m.*,
+        tsr.year,
+        tsr.review_result reviewResult,
+        tsr.street_review_result streetReviewResult,
+        tsr.district_review_result districtReviewResult,
+        tsriv.street_review_value,
+        tsriv.district_review_value,
+        tsriv.review_value
+        FROM
+        (
+        SELECT
+        ts.site_id siteId,
+        ts.site_name siteName,
+        p.`park_id` parkId,
+        p.`park_name` parkName,
+        t.`street_id` streetId,
+        t.`street_Name` streetName,
+        tsa.district_committee_title districtCommitteeTitle,
+        tsa.district_committee_time districtCommitteeTime,
+        tsa.district_committee_user_id districtCommitteeUserId,
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) selfValue
+        FROM
+        tb_site ts,
+        tb_site_application tsa,
+        tb_site_application_index_value tsai,
+        tb_sys_industrial_park p,
+        tb_sys_street t
+        WHERE
+        ts.site_id = tsa.site_id
+        AND ts.site_id = tsai.site_id
+        AND tsa.district_committee_title IS NOT NULL
+        AND ts.`park_id` = p.`park_id`
+        AND ts.`street_id` = t.`street_id`
+        <if test="streetId != null and streetId!='' ">
+            AND t.streetId =#{streetId}
+        </if>
+        <if test="parkId != null  and parkId!='' ">
+            AND p.`parkId` =#{parkId}
+        </if>
+        <if test="siteName != null and siteName!='' ">
+            AND ts.siteName LIKE CONCAT('%',#{siteName},'%')
+        </if>
+        GROUP BY
+        ts.site_id
+        ) m
+        JOIN tb_site_review_index_value tsriv ON m.siteId = tsriv.site_id
+        <if test="year != null and year!='' ">
+            AND tsriv.year =#{year}
+        </if>
+        JOIN tb_site_review tsr ON m.siteId = tsr.site_id
+        <if test="year != null and year!='' ">
+            AND tsr.year =#{year}
+        </if>
+        AND tsr.district_review_result = '1'
+        AND (tsr.review_result = '0' or substring_index( m.districtCommitteeTime, "-", 1 )=#{year})
+        GROUP BY
+        m.siteId,
+        tsriv.index_id) n
+        group by n.siteId ) h
+        ORDER BY h.reviewValue desc,h.districtReviewValue desc,h.streetReviewValue desc) w
+    </select>
+
+    <select id="getTbSiteReviewIndexValue"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue">
+        SELECT * FROM tb_site_review_index_value where year=#{year} and site_id=#{siteId} and index_id=#{indexId}
+    </select>
+
+    <select id="getTbSiteReviewIndexValue1"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue">
+        SELECT seq_id seqId,year year,site_id siteId,index_id indexId,review_value reviewValue,
+            street_review_value streetReviewValue,district_review_value districtReviewValue
+        FROM tb_site_review_index_value where year=#{year} and site_id=#{siteId}
+    </select>
+
+    <select id="getTbSiteReview" resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview">
+        SELECT * FROM tb_site_review where year=#{year} and site_id=#{siteId}
+    </select>
+
+    <insert id="replaceTbSiteReviewIndexValue"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReviewIndexValue">
+        REPLACE INTO tb_site_review_index_value (year,site_id,index_id,review_value)
+        VALUES
+        <foreach collection="list" item="tbSiteReviewIndexValue" index="index" separator=",">
+            (
+            #{tbSiteReviewIndexValue.year},
+            #{tbSiteReviewIndexValue.siteId},
+            #{tbSiteReviewIndexValue.indexId},
+            #{tbSiteReviewIndexValue.reviewValue}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="replaceTbSiteReview"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSiteReview">
+        REPLACE INTO tb_site_review (year,site_id,review_result,review_user_id,review_time)
+        VALUES
+        (#{year},
+        #{siteId},
+        #{reviewResult},
+        #{reviewUserId},
+        #{reviewTime})
+    </insert>
+
+    <select id="getSystemUser" resultType="com.jet.cloud.jetsndcxqyapply.entity.SystemUser"
+            parameterType="java.util.Map">
+        SELECT * FROM (
+        SELECT user_id,user_name,role_id,site_id,street_id,registration_time,last_login_time,
+        last_login_ip,memo,create_user_id,create_time,update_user_id,update_time
+        FROM tb_sys_user
+        <where>
+            <if test="userId != null and userId!='' ">
+                AND user_id LIKE CONCAT('%',#{userId},'%')
+            </if>
+            <if test="userName != null  and userName!='' ">
+                AND user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
+        </where>
+        order by seq_id desc ) a
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="getSumSystemUser" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1) FROM(
+        SELECT user_id,user_name,role_id,site_id,street_id,registration_time,last_login_time,
+        last_login_ip,memo,create_user_id,create_time,update_user_id,update_time
+        FROM tb_sys_user
+        <where>
+            <if test="userId != null and userId!='' ">
+                AND user_id LIKE CONCAT('%',#{userId},'%')
+            </if>
+            <if test="userName != null  and userName!='' ">
+                AND user_name LIKE CONCAT('%',#{userName},'%')
+            </if>
+        </where>
+        ) a
+    </select>
+
+    <select id="getUserRole" resultType="com.jet.cloud.jetsndcxqyapply.entity.UserRole" parameterType="java.util.Map">
+        SELECT * FROM tb_sys_role
+        <where>
+            <if test="roleName != null and roleName!='' ">
+                AND role_name LIKE CONCAT('%',#{roleName},'%')
+            </if>
+        </where>
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="getSumUserRole" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1) FROM tb_sys_role
+        <where>
+            <if test="roleName != null and roleName!='' ">
+                AND role_name =#{roleName}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserRole" parameterType="com.jet.cloud.jetsndcxqyapply.entity.UserRole">
+        update tb_sys_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="startDate != null and startDate!='' ">
+                start_date =#{startDate},
+            </if>
+            <if test="endDate != null and endDate!='' ">
+                end_date =#{endDate},
+            </if>
+            <if test="memo != null and memo!='' ">
+                memo =#{memo},
+            </if>
+            <if test="updateUserId != null and updateUserId!='' ">
+                update_user_id =#{updateUserId},
+            </if>
+            <if test="updateTime != null and updateTime!='' ">
+                update_time =#{updateTime},
+            </if>
+        </trim>
+        where role_id=#{roleId}
+    </update>
+
+    <select id="getSysPoints" resultType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSySPoints">
+        SELECT * FROM tb_sys_prompt
+    </select>
+
+    <insert id="insertSysPoints"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSySPoints">
+        insert INTO tb_sys_prompt (points,memo,create_user_id,create_time,update_user_id,update_time)
+        VALUES (#{points},#{memo},#{createUserId},#{createTime},#{updateUserId},#{updateTime})
+    </insert>
+
+    <update id="updateSysPoints"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.district.TbSySPoints">
+        update tb_sys_prompt set points=#{points},memo=#{memo},create_user_id=#{createUserId},
+        create_time=#{createTime},update_user_id=#{updateUserId},update_time=#{updateTime}
+    </update>
+
+    <select id="getSysLog" resultType="com.jet.cloud.jetsndcxqyapply.entity.log.TbSysLog" parameterType="java.util.Map">
+        SELECT * FROM tb_sys_log
+        <where>
+            <if test="operatorId != null and operatorId!='' ">
+                AND operator_id like CONCAT('%',#{operatorId},'%')
+            </if>
+            <if test="beginDate != null and beginDate!='' and (endDate ==null or endDate=='') ">
+                AND operate_time &gt; #{beginDate}
+            </if>
+            <if test="(beginDate ==null or beginDate=='') and endDate !=null and endDate!='' ">
+                AND operate_time &lt; #{endDate}
+            </if>
+            <if test="beginDate != null and endDate !=null and beginDate!='' and endDate !=''">
+                AND operate_time &gt; #{beginDate}
+                and operate_time &lt; #{endDate}
+            </if>
+        </where>
+        order by operate_time desc
+        <if test="page != null and limit !=null">
+            limit #{page},#{limit}
+        </if>
+    </select>
+
+    <select id="getSumSysLog" resultType="java.lang.Integer" parameterType="java.util.Map">
+        SELECT count(1) FROM tb_sys_log
+        <where>
+            <if test="operatorId != null and operatorId!='' ">
+                AND operator_id like CONCAT('%',#{operatorId},'%')
+            </if>
+            <if test="beginDate != null and beginDate!='' and (endDate ==null or endDate=='') ">
+                AND operate_time &gt; #{beginDate}
+            </if>
+            <if test="(beginDate ==null or beginDate=='') and endDate !=null and endDate!='' ">
+                AND operate_time &lt; #{endDate}
+            </if>
+            <if test="beginDate != null and endDate !=null and beginDate!='' and endDate !=''">
+                AND operate_time &gt; #{beginDate}
+                and operate_time &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateSiteReview" parameterType="map">
+        update tb_site_review
+        <trim prefix="set" suffixOverrides=",">
+            review_result='-1',district_review_result='-1',street_review_result='-1'
+        </trim>
+        <where>
+            <if test="year!=null and year!=''">
+                year = #{year}
+            </if>
+            <if test="siteId!=null and siteId!=''">
+                and site_id = #{siteId}
+            </if>
+        </where>
+    </update>
+</mapper>

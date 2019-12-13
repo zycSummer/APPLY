@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="loginHtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>苏州高新区劳动关系和谐企业和工业园申报管理系统</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="ctx" th:content="@{/}"/>
+    <link rel="icon" th:href="@{/public/web/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/public/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/main.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/officeArea.css}" media="all"/>
+</head>
+<body>
+    <div class="main">
+        <header>
+            <img src="/public/web/images/logo.png"/>
+            <h2>苏州高新区劳动关系和谐企业和工业园申报管理系统</h2>
+            <div id="message">
+                <a id="userName" href="javascript:void(0)">段飞</a>，欢迎您登录系统&nbsp; | &nbsp;<a id="signOut" href="javascript:void(0)">退出</a>
+            </div>
+        </header>
+        <div id="content">
+            <ul class="layui-nav layui-nav-tree" lay-filter="progress">
+                <li class="layui-nav-item layui-this"><a data-id="assess" href="javascript:void(0)">申报评定</a></li>
+                <li class="layui-nav-item"><a data-id="review" href="javascript:void(0)">复审评定</a></li>
+            </ul>
+            <div id="assess" class="layui-hide">
+                <div class="table-title">
+                    <div class="layui-form" lay-filter="search">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属街道：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="streetId" id="streetId" lay-filter="streetId">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属工业园：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="parkId" id="parkId" lay-filter="parkId">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">企业名称：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="businessName" id="businessName"
+                                   class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search">查询</button>
+                        <button class="layui-btn layui-btn-sm reported layui-btn-disabled">上报</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table1" class="layui-table" lay-filter="table1"></div>
+                    <script type="text/html" id="btn">
+                        {{#  if(d.status == 1){ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="seeDetails">查看详情</a>
+                        {{#  } else { }}
+                        <a class="layui-btn layui-btn-xs assess layui-btn-disabled" lay-event="assess">申报评定</a>
+                        {{#  } }}
+                        <a class="layui-btn layui-btn-xs" lay-event="downloadFile">复审材料下载</a>
+                    </script>
+                </div>
+            </div>
+            <div id="review" class="layui-hide">
+                <div class="table-title">
+                    <div class="layui-form" lay-filter="review">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属街道：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="streetId" id="streetId2" lay-filter="streetId2">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">所属工业园：</label>
+                            <div class="layui-input-block selectCon">
+                                <select name="parkId" id="parkId2" lay-filter="parkId2">
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">企业名称：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="businessName" id="businessName2"
+                                   class="layui-input" />
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">时间：</label>
+                            <input type="text" placeholder="请输入" autocomplete="off" name="year" id="year"
+                                   class="layui-input" />
+                        </div>
+                    </div>
+                    <div class="layui-btn-group">
+                        <button class="layui-btn layui-btn-sm search2">查询</button>
+                        <button class="layui-btn layui-btn-sm reported2 layui-btn-disabled">上报</button>
+                    </div>
+                </div>
+                <div class="tableContent">
+                    <div id="table2" class="layui-table" lay-filter="table2"></div>
+                    <script type="text/html" id="btn2">
+                        {{#  if(d.districtReviewResult == 1){ }}
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="seeDetails">查看详情</a>
+                        {{#  } else { }}
+                        <a class="layui-btn layui-btn-xs assess layui-btn-disabled" lay-event="assess">复审评定</a>
+                        {{#  } }}
+                        <a class="layui-btn layui-btn-xs" lay-event="downloadFile">复审材料下载</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" th:src="@{/public/editSelect/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/public/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/main.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/officeArea.js}"></script>
+
+    <!--区三方办公室申报评定-->
+    <div class="layui-hide" id="officeAssess">
+        <div class="tableConent">
+            <h3>xxxx企业</h3>
+            <div id="tableCon1"><!--查看详情-->
+                <div id="diaTable1" class="layui-table layui-hide" lay-filter="diaTable1"></div>
+                <script type="text/html" id="downloadBtn1">
+                    {{#  if(d.fileNames?d.fileNames.length>0:false){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="downloadFile1">下载</a>
+                    {{#  } }}
+                </script>
+            </div>
+            <div id="tableCon2"><!--申报评定-->
+                <div id="diaTable2" class="layui-table layui-hide" lay-filter="diaTable2"></div>
+                <script type="text/html" id="downloadBtn2">
+                    {{#  if(d.fileNames?d.fileNames.length>0:false){ }}
+                    <a class="layui-btn layui-btn-xs" lay-event="downloadFile2">下载</a>
+                    {{#  } }}
+                </script>
+            </div>
+        </div>
+    </div>
+
+    <!--区三方办公室复审评定-->
+    <div class="layui-hide" id="reviewAssess">
+        <div class="tableConent">
+            <h3>xxxx企业</h3>
+            <div id="tableCon3"><!--查看详情-->
+                <div id="diaTable3" class="layui-table layui-hide" lay-filter="diaTable3"></div>
+            </div>
+            <div id="tableCon4"><!--复审评定-->
+                <div id="diaTable4" class="layui-table layui-hide" lay-filter="diaTable4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--修改密码-->
+    <form class="layui-form layui-hide" id="changePwd" action="" style="padding:20px 20px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="oldPwd" id="oldPwd" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="newPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="confirmPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+
+</body>
+</html>

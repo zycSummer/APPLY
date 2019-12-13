@@ -1,0 +1,388 @@
+/*汇总 表格*/
+#collect{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#collect .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#collect .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#collect .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#collect .table-title .layui-form-item .layui-input,.selectCon{
+    width:220px;
+}
+/*复审 表格*/
+#recheck{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#recheck .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#recheck .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#recheck .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#recheck .table-title .layui-form-item .layui-input,.selectCon{
+    width:220px;
+}
+/*账号管理 表格*/
+#account{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#account .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#account .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#account .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+/*账号时限管理 表格*/
+#accountTimeLimit{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#accountTimeLimit .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#accountTimeLimit .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#accountTimeLimit .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+/*系统提示 表格*/
+#systemMsg{
+    width:1px;
+    flex-grow:1;
+    /*margin-bottom:10px;*/
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+#systemMsg #editor{
+    height:1px;
+    flex-grow:1;
+}
+@media screen and (min-height: 752px){
+    #systemMsg #editor .w-e-text-container{
+        height:95% !important;
+    }
+}
+@media screen and (min-height: 631px) and (max-height:752px){
+    #systemMsg #editor .w-e-text-container{
+        height:93% !important;
+    }
+}
+@media screen and (max-height:631px){
+    #systemMsg #editor .w-e-text-container{
+        height:91% !important;
+    }
+}
+#systemMsg .systemMsgBtn{
+    text-align: right;
+}
+/*系统日志 表格*/
+#systemLog{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#systemLog .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#systemLog .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#systemLog .table-title .layui-form-item .layui-input{
+    display: inline-block;
+    width:220px;
+}
+/*统计分析*/
+#statAnalysis{
+    width:1px;
+    flex-grow:1;
+    padding:0 10px 10px 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+/*总得分分布、总得分分组统计、指标得分对比*/
+#chartsTitle{
+    position: relative;
+}
+#chartsTitle .layui-nav{
+    padding:0 0 10px 0;
+    background-color: #fff;
+}
+#chartsTitle .layui-nav .layui-nav-item{
+    line-height: 40px;
+}
+#chartsTitle .layui-nav li a{
+    color:#000;
+}
+#chartsTitle .layui-nav li:hover a{
+    color:#000;
+    font-weight: bold;
+}
+#chartsTitle .layui-this a{
+    color: #000;
+    font-weight: bold;
+}
+
+#allYear{
+    width:120px;
+}
+.search6{
+    position: absolute;
+    right:0;
+    bottom:15px;
+}
+#chartsTitle>.layui-form{
+    margin-right:45px;
+}
+#chartsTitle>.layui-form .layui-form-item{
+    display:inline-block;
+    margin-bottom:5px;
+}
+#chartsTitle>.layui-form .layui-form-item .layui-form-label{
+    white-space: nowrap;
+    padding-left:10px;
+    padding-right:0;
+}
+
+#chartsTitle>.layui-form .selectCon{
+    display:inline-block;
+    width:120px;
+}
+#chartsTitle>.layui-form .objSelect,#chartsTitle>.layui-form .indexSelect{
+    width:230px;
+}
+
+/*企业性质 所属行业 全选*/
+.checkAllForm,.checkAllForm2{
+    position: absolute;
+    height:10px;
+    width:10px;
+    top:5px;
+    right:40px;
+    z-index:999;
+}
+.checkAllForm .layui-form-checkbox,.checkAllForm2 .layui-form-checkbox{
+    width:43px;
+    height:16px;
+    line-height: 16px;
+    margin-right:4px;
+    padding-right:22px;
+}
+.checkAllForm .layui-form-checkbox span,.checkAllForm2 .layui-form-checkbox span{
+    font-size:3px !important;
+    padding:1px 2px;
+}
+.checkAllForm .layui-form-checkbox i,.checkAllForm2 .layui-form-checkbox i{
+    width:15px;
+    height:16px;
+    line-height: 16px;
+    font-size:6px;
+}
+#siteTree,#industryTree{
+    margin-top:20px;
+}
+
+#statAnalysis #chart-content{
+    height:1px;
+    flex-grow:1;
+    position:relative;
+}
+#chart1,#chart2,#pie,.itemClass,#chart3,#chart4{
+    display: none;
+}
+#pie{
+    position:absolute;
+    right:0;
+    top:0;
+}
+.tableAn{
+    height:100px;
+    display: none;
+}
+
+/*common*/
+.tableContent{
+    height:1px;
+    flex-grow:1;
+}
+/*授予称号 弹窗*/
+#dubbed .dubContent{
+    margin:10px 0 10px 30px;
+}
+#dubbed .dubContent .selectCon{
+    display: inline-block;
+}
+/*复审页面*/
+#tableCon3 .layui-table-cell .layui-input {
+    height: 28px;
+}
+.reviewCon2,.reviewCon3{
+    display: inline-block;
+    margin-left:10px;
+}
+/*复审页面 详情*/
+#review2,#review2.layui-unselect{
+    z-index: 99;
+}
+#tableCon2 .review2.layui-table-cell{
+    height:40px;
+    line-height: 40px;
+}
+/*复审页面 复审*/
+#tableCon3 .review3.layui-table-cell{
+    height:130px;
+    line-height: 35px;
+}
+#tableCon3 .review3.layui-table-cell .reviewCon3 .layui-input{
+    height:38px;
+}
+/*账号管理 修改*/
+#addAccount{
+    margin:10px 20px 10px 10px;
+}
+#addAccount>.layui-form-item .layui-form-label{
+    white-space: nowrap;
+}
+#addAccount .selectCon{
+    display: inline-block;
+    width:300px;
+}
+/*账号时限管理 修改*/
+#timeLimitChange{
+    margin:10px;
+}
+
+#committeeDetail{
+    margin:10px;
+    height:600px;
+}

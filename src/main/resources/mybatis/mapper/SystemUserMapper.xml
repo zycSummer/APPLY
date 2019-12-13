@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.cloud.jetsndcxqyapply.mapper.SystemUserMapper">
+
+    <select id="getUserByUserId" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.SystemUser">
+        SELECT
+            *
+        FROM
+            tb_sys_user
+        WHERE user_id=#{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.jet.cloud.jetsndcxqyapply.entity.SystemUser">
+        INSERT INTO tb_sys_user (user_id,user_name,user_pwd,role_id,site_id,
+        street_id,registration_time,last_login_time,last_login_ip,memo,
+        create_user_id,create_time,update_user_id,update_time)
+        VALUES (#{userId},#{userName},#{userPwd},#{roleId},#{siteId},
+        #{streetId},#{registrationTime},#{lastLoginTime},#{lastLoginIp},#{memo},
+        #{createUserId},#{createTime},#{updateUserId},#{updateTime})
+    </insert>
+
+    <select id="getUserRoles" resultType="com.jet.cloud.jetsndcxqyapply.entity.UserRole">
+        SELECT * FROM tb_sys_role
+    </select>
+
+    <select id="getUserRolesByRoleId" resultType="com.jet.cloud.jetsndcxqyapply.entity.UserRole" parameterType="string">
+        SELECT * FROM tb_sys_role where role_id= #{roleId}
+    </select>
+
+    <update id="updateUser" parameterType="com.jet.cloud.jetsndcxqyapply.entity.SystemUser">
+        UPDATE tb_sys_user set user_id=#{userId},user_name=#{userName},user_pwd=#{userPwd},
+        role_id=#{roleId},site_id=#{siteId},street_id=#{streetId},registration_time=#{registrationTime},
+        last_login_time=#{lastLoginTime},last_login_ip=#{lastLoginIp},memo=#{memo},create_user_id=#{createUserId},
+        create_time=#{createTime},update_user_id=#{updateUserId},update_time=#{updateTime}
+        where user_id=#{userId}
+    </update>
+
+    <delete id="deleteUser" parameterType="java.lang.String">
+        delete from tb_sys_user where user_id=#{userId}
+    </delete>
+
+    <select id="getSiteBySiteId" parameterType="java.lang.String" resultType="com.jet.cloud.jetsndcxqyapply.entity.CompanySite">
+        SELECT * FROM tb_site WHERE site_id=#{id}
+    </select>
+
+    <insert id="insertSite" parameterType="com.jet.cloud.jetsndcxqyapply.entity.CompanySite">
+        INSERT INTO tb_site (site_id,site_name,org_code,site_type_id,industry_type_id,
+        street_id,park_id,addr,applicant,contacts,
+        tel,mobile,mail,business_license,memo,create_user_id,create_time,update_user_id,update_time)
+        VALUES (#{siteId},#{siteName},#{orgCode},#{siteTypeId},#{industryTypeId},
+        #{streetId},#{parkId},#{addr},#{applicant},#{contacts},#{tel},#{mobile},#{mail},#{businessLicense},
+        #{memo},#{createUserId},#{createTime},#{updateUserId},#{updateTime})
+    </insert>
+
+    <update id="updateSite" parameterType="com.jet.cloud.jetsndcxqyapply.entity.CompanySite">
+        update tb_site set site_id=#{siteId},site_name=#{siteName},org_code=#{orgCode},
+        site_type_id=#{siteTypeId},industry_type_id=#{industryTypeId},street_id=#{streetId},park_id=#{parkId},
+        addr=#{addr},applicant=#{applicant},contacts=#{contacts},tel=#{tel},mobile=#{mobile},mail=#{mail},
+        business_license=#{businessLicense},memo=#{memo},create_user_id=#{createUserId},
+        create_time=#{createTime},update_user_id=#{updateUserId},update_time=#{updateTime}
+        where site_id=#{siteId}
+    </update>
+
+    <delete id="deleteSite" parameterType="java.lang.String">
+        delete from tb_site where site_id=#{id}
+    </delete>
+
+    <select id="getSysSiteType" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysSiteType">
+        SELECT * FROM tb_sys_site_type
+    </select>
+
+    <select id="getSysIndustyType" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysIndustyType">
+        SELECT * FROM tb_sys_industry_type
+    </select>
+
+    <select id="getSysStreet" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysStreet">
+        SELECT * FROM tb_sys_street
+    </select>
+
+    <select id="getSysStreetByStreetId" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysStreet" parameterType="string">
+        SELECT * FROM tb_sys_street where street_id=#{streetId}
+    </select>
+
+    <select id="getSysIndustrialPark" resultType="com.jet.cloud.jetsndcxqyapply.entity.SysIndustrialPark">
+        SELECT * FROM tb_sys_industrial_park
+    </select>
+
+    <select id="getSiteId" resultType="java.lang.String">
+        SELECT MAX(CAST(IFNULL(site_id,'9999999') AS SIGNED INTEGER))+1 FROM tb_site
+    </select>
+
+    <select id="getMailByUserId" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT * FROM tb_site t WHERE t.site_id=(SELECT ts.site_id FROM tb_sys_user ts WHERE ts.user_Id=#{id})
+    </select>
+
+    <select id="getTbSysMenuFunc" parameterType="java.lang.String" resultType="com.jet.cloud.jetsndcxqyapply.entity.Authority.TbSysMenuFunc">
+        SELECT * FROM  tb_sys_menu_func WHERE meun_id IN( SELECT meun_id FROM tb_sys_role_mapping_menu WHERE role_id=#{roleId})
+    </select>
+
+    <update id="updateUserTime" parameterType="com.jet.cloud.jetsndcxqyapply.entity.SystemUser">
+        UPDATE tb_sys_user set user_id=#{userId},user_name=#{userName},user_pwd=#{userPwd},
+        role_id=#{roleId},site_id=#{siteId},street_id=#{streetId},registration_time=#{registrationTime},
+        last_login_time=#{lastLoginTime},last_login_ip=#{lastLoginIp},memo=#{memo},create_user_id=#{createUserId},
+        create_time=#{createTime},update_user_id=#{updateUserId},update_time=#{updateTime}
+        where user_id=#{userId}
+    </update>
+
+</mapper>

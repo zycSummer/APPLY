@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jet.cloud.jetsndcxqyapply.mapper.CompanySiteMapper">
+
+    <select id="checkIsRegisterNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT * FROM tb_sys_user t WHERE t.role_id=#{roldId} AND t.user_id=#{userId} AND EXISTS
+        (SELECT * FROM tb_sys_role ts WHERE t.role_id=ts.role_id AND DATE_FORMAT(SYSDATE(), '%Y-%m-%d') BETWEEN
+        ts.start_date
+        AND ts.end_date)
+    </select>
+
+    <select id="getRoleDate" parameterType="java.lang.String" resultType="java.util.Map">
+        SELECT start_date,end_date FROM tb_sys_role ts
+        WHERE ts.role_id=#{roleId}
+    </select>
+
+    <insert id="insertTbSiteApplicationIndexValue"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationIndexValue">
+        REPLACE INTO tb_site_application_index_value
+        (site_id,index_id,self_value,street_value,district_value,file_names)
+        VALUES
+        <foreach collection="list" item="tbSiteApplicationIndexValue" index="index" separator=",">
+            (
+            #{tbSiteApplicationIndexValue.siteId},
+            #{tbSiteApplicationIndexValue.indexId},
+            #{tbSiteApplicationIndexValue.selfValue},
+            #{tbSiteApplicationIndexValue.streetValue},
+            #{tbSiteApplicationIndexValue.districtValue},
+            #{tbSiteApplicationIndexValue.fileNames}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="updateTbSiteApplicationIndexValue"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationIndexValue">
+        REPLACE INTO tb_site_application_index_value
+        (site_id,index_id,self_value,street_value,district_value,file_names)
+        VALUES
+        <foreach collection="list" item="tbSiteApplicationIndexValue" index="index" separator=",">
+            (
+            #{tbSiteApplicationIndexValue.siteId},
+            #{tbSiteApplicationIndexValue.indexId},
+            #{tbSiteApplicationIndexValue.selfValue},
+            #{tbSiteApplicationIndexValue.streetValue},
+            #{tbSiteApplicationIndexValue.districtValue},
+            #{tbSiteApplicationIndexValue.fileNames}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateIndexValue">
+        update tb_site_application_index_value
+        set file_names=#{fileNames}
+        <where>
+            seq_id=#{seqId}
+        </where>
+    </update>
+
+    <insert id="insertTbSiteApplication"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplication">
+        REPLACE INTO tb_site_application (site_id,self_user_id,self_save_time,self_submit_time,street_suggestion,
+        street_user_id,street_save_time,street_submit_time,district_suggestion,district_user_id,
+        district_save_time,district_submit_time,district_committee_title,district_committee_user_id,
+        district_committee_time)
+        VALUES
+        <foreach collection="list" item="tbSiteApplication" index="index" separator=",">
+            (
+            #{tbSiteApplication.siteId},
+            #{tbSiteApplication.selfUserId},
+            #{tbSiteApplication.selfSaveTime},
+            #{tbSiteApplication.selfSubmitTime},
+            #{tbSiteApplication.streetSuggestion},
+            #{tbSiteApplication.streetUserId},
+            #{tbSiteApplication.streetSaveTime},
+            #{tbSiteApplication.streetSubmitTime},
+            #{tbSiteApplication.districtSuggestion},
+            #{tbSiteApplication.districtUserId},
+            #{tbSiteApplication.districtSaveTime},
+            #{tbSiteApplication.districtSubmitTime},
+            #{tbSiteApplication.districtCommitteeTitle},
+            #{tbSiteApplication.districtCommitteeUserId},
+            #{tbSiteApplication.districtCommitteeTime}
+            )
+        </foreach>
+    </insert>
+
+    <!-- <update id="updateTbSiteApplication"
+             parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplication">
+         UPDATE tb_site_application set site_id=#{siteId},self_user_id=#{selfUserId},self_save_time=#{selfSaveTime},
+         self_submit_time=#{selfSubmitTime},street_suggestion=#{streetSuggestion},street_user_id=#{streetUserId},
+         street_save_time=#{streetSaveTime},street_submit_time=#{streetSubmitTime},district_suggestion=#{districtSuggestion},
+         district_user_id=#{districtUserId},district_save_time=#{districtSaveTime},district_submit_time=#{districtSubmitTime},
+         district_committee_title=#{districtCommitteeTitle},district_committee_user_id=#{districtCommitteeUserId},
+         district_committee_time=#{districtCommitteeTime}
+         where site_id=#{siteId}
+     </update>-->
+
+    <insert id="insertTbSiteApplicationAppendix"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix">
+        insert INTO tb_site_application_appendix (site_id,appendix_type,path,memo,
+        create_user_id,create_time,update_user_id,update_time,review,file_name)
+        VALUES
+        (
+        #{siteId},
+        #{appendixType},
+        #{path},
+        #{memo},
+        #{createUserId},
+        #{createTime},
+        #{updateUserId},
+        #{updateTime},
+        #{review},
+        #{fileName}
+        )
+    </insert>
+
+    <update id="updateTbSiteApplicationAppendix"
+            parameterType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix">
+        update tb_site_application_appendix
+        set
+        site_id=#{siteId},
+        appendix_type=#{appendixType},
+        path=#{path},
+        memo=#{memo},
+        create_user_id=#{createUserId},
+        create_time=#{createTime},
+        update_user_id=#{updateUserId},
+        update_time=#{updateTime},
+        review=#{review},
+        file_name=#{fileName}
+        <where>
+            seq_id =#{seqId}
+        </where>
+    </update>
+
+    <insert id="insertLog" parameterType="com.jet.cloud.jetsndcxqyapply.entity.log.TbSysLog">
+        INSERT INTO tb_sys_log (operator_id,operate_time,operate_ip,operate_content,
+        operate_result,url,method,meun_id,func_id,memo)
+        VALUES (#{operatorId},#{operateTime},#{operateIp},#{operateContent},#{operateResult},#{url},
+        #{method},#{meunId},#{funcId},#{memo})
+    </insert>
+
+    <select id="checkAuthority" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT * FROM tb_sys_role_mapping_menu WHERE role_id =#{roleId}
+        AND meun_id = (SELECT meun_id FROM tb_sys_menu WHERE menu_name=#{menuName})
+    </select>
+
+    <select id="getm" resultMap="mujiMap" parameterType="string">
+        SELECT index_id,index_name,`min`,`max`,parent_id,value_type,enum from tb_index
+        <choose>
+            <when test="_parameter == null">
+                where parent_id is null
+            </when>
+            <otherwise>
+                where parent_id = #{_parameter}
+            </otherwise>
+        </choose>
+    </select>
+
+    <resultMap type="com.jet.cloud.jetsndcxqyapply.entity.Company.Muji" id="mujiMap">
+        <id column="index_id" property="indexId"/>
+        <result column="index_name" property="indexName"/>
+        <result column="min" property="min"/>
+        <result column="max" property="max"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="value_type" property="valueType"/>
+        <result column="enum" property="enum1"/>
+        <collection property="mujis" column="index_id" select="getm">
+        </collection>
+    </resultMap>
+
+    <select id="checkIsCommit" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplication">
+        select * from tb_site_application where site_id=#{siteId}
+    </select>
+
+    <select id="checkCompanyReview" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplication">
+        select * from tb_site_application
+        where site_id=#{siteId}
+        and district_committee_title is not null
+    </select>
+
+    <select id="getTbSiteApplicationIndexValue" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationIndexValue">
+        select * from tb_site_application_index_value where site_Id=#{siteId} and index_Id=#{indexId}
+    </select>
+
+    <select id="getTbSiteApplicationIndexValueByFileName" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationIndexValue">
+        select * from tb_site_application_index_value where file_names like CONCAT('%',#{fileName},'%')
+    </select>
+
+    <select id="getTbSiteApplicationAppendix" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix">
+        select * from tb_site_application_appendix where seq_id=#{seqId}
+    </select>
+
+    <select id="getTbSiteApplicationAppendix1" parameterType="java.lang.String"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix">
+        select * from tb_site_application_appendix where site_Id=#{siteId} and review='0'
+    </select>
+
+    <select id="getTbSysMenuFunc" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT * FROM tb_sys_role_mapping_menu_func WHERE role_id=#{roleId} AND
+        func_Id=(SELECT func_id FROM tb_sys_menu_func WHERE url=#{url})
+    </select>
+
+    <select id="getOrgCodeByYear" resultType="com.jet.cloud.jetsndcxqyapply.entity.CompanySite">
+        SELECT * FROM tb_site t WHERE t.site_id IN (
+        SELECT ts.site_Id FROM tb_site_application ts WHERE ts.self_submit_time IS NOT NULL)
+        AND DATE_FORMAT(t.`create_time`,'%Y')=DATE_FORMAT(NOW(),'%Y')
+    </select>
+
+    <select id="sumScore" resultType="java.util.Map" parameterType="string">
+        SELECT
+        SUM(CAST(IFNULL(self_value,0) AS DECIMAL(8,1))) sumSelfValye,
+        SUM(CAST(IFNULL(CASE WHEN (street_value='' OR street_value IS NULL) THEN self_value ELSE street_value END,0) AS
+        DECIMAL(8,1))) sumStreetValue,
+        SUM(CAST(IFNULL(CASE WHEN (district_value ='' OR district_value IS NULL) THEN (CASE WHEN (street_value='' OR
+        street_value IS NULL) THEN self_value ELSE street_value END) ELSE district_value END,0) AS DECIMAL(8,1)))
+        sumDistrictValue
+        FROM tb_site_application_index_value
+        WHERE site_id =#{siteId}
+    </select>
+
+    <delete id="deleteTbSiteApplicationAppendix" parameterType="string">
+        delete from tb_site_application_appendix where seq_Id=#{seqId}
+    </delete>
+
+    <select id="getAllAppendix" resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix"
+            parameterType="string">
+        SELECT
+        *
+        FROM tb_site_application_appendix
+        WHERE review='1' and site_id=#{siteId}
+    </select>
+
+    <select id="checkIsExistAppendix"
+            resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TbSiteApplicationAppendix">
+        SELECT
+        *
+        FROM tb_site_application_appendix
+        WHERE site_id=#{siteId} and file_name=#{fileName}
+    </select>
+
+    <select id="getFileName" resultType="com.jet.cloud.jetsndcxqyapply.entity.Company.TBIndexMappingFileName"
+            parameterType="string">
+        SELECT * from tb_index_mapping_filename
+        <where>
+            file_name like CONCAT('%',#{fileName},'%')
+        </where>
+    </select>
+
+</mapper>

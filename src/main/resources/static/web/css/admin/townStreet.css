@@ -1,0 +1,115 @@
+/* --------------  申报测评   ------------  */
+/*镇街道 表格*/
+#declare{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#declare .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#declare .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#declare .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+#declare .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#declare .tableContent{
+    height:1px;
+    flex-grow:1;
+}
+/*镇（街道）三方组织 申报测评*/
+#townSurvey{
+    margin:10px;
+    height:600px;
+}
+#townSurvey h3{
+    text-align: center;
+}
+#townSurvey .tableConent{
+    margin:0 10px;
+}
+
+#townSurvey .layui-table-cell .layui-input {
+    height: 28px;
+}
+
+/* --------------  复审测评   ------------  */
+/*镇街道 表格*/
+#review{
+    width:1px;
+    flex-grow:1;
+    margin-bottom:10px;
+    padding:10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+#review .table-title{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    justify-content: space-between;
+}
+#review .table-title .layui-form-item{
+    display:inline-block;
+    margin-bottom:0;
+}
+#review .table-title .layui-form-item .layui-input{
+    width:220px;
+}
+#review .table-title .layui-form-label{
+    white-space: nowrap;
+}
+#review .tableContent{
+    height:1px;
+    flex-grow:1;
+}
+/*镇（街道）三方组织测评*/
+#townReview{
+    margin:10px;
+    height:600px;
+}
+#townReview h3{
+    text-align: center;
+}
+#townReview .tableConent{
+    margin:0 10px;
+}
+
+#townReview .layui-table-cell .layui-input {
+    height: 28px;
+}

@@ -1,0 +1,120 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+    margin: 0;
+    padding: 0;
+}
+html,
+body {
+    height: 100%;
+    width: 100%;
+}
+.main{
+    height:100%;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+.main header{
+    border-bottom: 1px solid #006ebf;
+    position:relative;
+}
+.main header img{
+    height:100px;
+    margin:5px 30px 5px;
+}
+.main header h2{
+    display: inline-block;
+    margin-top:20px;
+    font-size:2.6rem;
+    font-weight: bold;
+    vertical-align: center;
+    color:#006ebf;
+}
+#message{
+    position: absolute;
+    padding:5px 10px;
+    right:10px;
+    bottom:5px;
+    color:#fff;
+    background-color: #cc3a3b;
+}
+#message #signOut,#userName{
+    color:#fff;
+}
+#content{
+    padding-top:0;
+    height:1px;
+    flex-grow:1;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:-moz-box;
+    display: -moz-flex;
+    display: flex;
+}
+#content>.layui-nav{
+    height:100%;
+    border-right: 1px solid #006ebf;
+    background-color: #fff;
+}
+#content .layui-nav-tree .layui-nav-item{
+    margin:10px;
+    width:90%;
+    background-color: #a4a4a4;
+}
+#content .layui-nav-tree .layui-nav-item a{
+    text-align: center;
+    font-size: 1.5em;
+}
+#content .layui-nav-tree .layui-this,#content .layui-nav-tree .layui-this>a,#content .layui-nav-tree .layui-this>a:hover{
+    background-color: #6cae3f;
+}
+#content .layui-nav-tree .layui-nav-bar{
+    margin-top:10px;
+}
+
+@media screen and (min-width: 730px) and (max-width:1122px){
+    .main header img{
+        height:80px;
+        margin:5px;
+    }
+    .main header h2{
+        font-size:2rem;
+    }
+    #message{
+        padding:3px 10px;
+    }
+}
+@media screen and (min-width: 644px) and (max-width:878px){
+    .main header img{
+        height:60px;
+        margin:5px;
+    }
+    .main header h2{
+        font-size:1.4rem;
+    }
+    #message{
+        padding:1px 10px;
+    }
+}
+@media screen and (max-width:644px){
+    .main header img{
+        height:60px;
+        margin-right:0;
+    }
+    .main header h2{
+        font-size:1rem;
+    }
+    #message{
+        padding:1px 10px;
+    }
+}

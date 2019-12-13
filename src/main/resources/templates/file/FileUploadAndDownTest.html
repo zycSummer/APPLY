@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多个文件上传</title>
+</head>
+<body>
+    <h1>多个文件上传</h1>
+    <form method="POST" action="/uploadMore" enctype="multipart/form-data">
+        文件1： <input type="file" name="file"/> <a href="/testDownload">下载</a><br/><br/>
+        文件2： <input type="file" name="file"/> <a href="/testDownload">下载</a><br/><br/>
+        文件3： <input type="file" name="file"/> <a href="/testDownload">下载</a><br/><br/>
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>

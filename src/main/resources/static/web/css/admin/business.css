@@ -1,0 +1,214 @@
+/*申报流程*/
+#reportProcess {
+    width: 1px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+}
+.processTitle{
+    text-align:center;
+    font-weight: 500;
+    margin:10px 0;
+}
+.list1{
+    font-size:1.3em;
+    margin-left:1em;
+    height:3em;
+    line-height: 3em;
+}
+.list2{
+    font-size:1.1em;
+    margin-left:3.1em;
+    line-height: 2.8em;
+}
+/*申报自评 表格*/
+#reportSelfAssessment {
+    width: 1px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#reportSelfAssessment h3 {
+    font-weight: bold;
+    color: #006ebf;
+    text-align: center;
+}
+#reportSelfAssessment .tableContent{
+    height:1px;
+    flex-grow: 1;
+}
+.btnGroup {
+    width: 100%;
+    margin: 5px 0;
+    text-align: right;
+}
+/*#table2{*/
+    /*height:200px;*/
+/*}*/
+/*#tableMemo{*/
+    /*height:400px;*/
+/*}*/
+/*申报进展 表格*/
+#reportProgress {
+    width: 1px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding: 0 10px 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+
+}
+
+/*注册信息 表格*/
+#registerMessage {
+    width: 1px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+#registerMessage h3 {
+    font-weight: bold;
+    color: #bf485b;
+    text-align: center;
+}
+
+#registerMessage .layui-form {
+    width: 680px;
+    margin: 10px auto;
+}
+
+#registerMessage .layui-form-item {
+    /*margin-bottom: 1px;*/
+}
+
+#registerMessage .layui-form-label {
+    white-space: nowrap;
+    text-align: left;
+}
+
+#registerMessage .layui-form-item > .layui-input, .selectCon {
+    width: 560px;
+}
+
+.pour {
+    padding-left: 15px;
+}
+
+.saveBtn {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/*资料下载 表格*/
+#dataDownload {
+    width: 1px;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: -moz-box;
+    display: -moz-flex;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+/*common*/
+.tableContent {
+    height: 1px;
+    flex-grow: 1;
+}
+
+.layui-table-cell .layui-input {
+    height: 28px;
+}
+
+@media screen and (min-width: 840px) and (max-width: 904px) {
+    #registerMessage .layui-form {
+        width: 620px;
+    }
+
+    #registerMessage .layui-form-item > .layui-input, .selectCon {
+        width: 500px;
+    }
+}
+
+@media screen and (min-width: 740px) and (max-width: 840px) {
+    #registerMessage .layui-form {
+        width: 515px;
+    }
+
+    #registerMessage .layui-form-item > .layui-input, .selectCon {
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 740px) {
+    #registerMessage .layui-form {
+        width: 415px;
+    }
+
+    #registerMessage .layui-form-item > .layui-input, .selectCon {
+        width: 300px;
+    }
+}
+
+/*印刷时再定义一套样式表，让滚动条不表示。*/
+@media print {
+    .table1 .layui-table-view {
+        height: auto !important;
+        width: 100% !important;
+    }
+    .table1 .layui-table-body {
+        height: auto !important;
+        width: 100% !important;
+    }
+}

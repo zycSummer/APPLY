@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html class="loginHtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <title>苏州高新区劳动关系和谐企业和工业园申报管理系统</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="ctx" th:content="@{/}" />
+    <link rel="icon" th:href="@{/public/web/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/public/layui/css/layui.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/login.css}" media="all" />
+</head>
+<body class="loginBody">
+    <!--<div id="message" th:if="${not #strings.isEmpty(failureReason)}" th:text="${'错误信息: '+ failureReason}"></div>-->
+    <header class="login_face">
+        <div><img src="/public/web/images/logo.png" /></div>
+        <h2>苏州高新区</br>劳动关系和谐企业和工业园申报管理系统</h2>
+    </header>
+    <div id="loginMain" class="layui-hide">
+        <div id="message">
+            <h3><span><i class="layui-icon layui-icon-tips"></i> 系统提示</span></h3>
+            <div id="systemPrompt"></div>
+        </div>
+        <form class="layui-form" lay-filter="login">
+            <h3>用户登录</h3>
+            <div class="layui-form-item formContent">
+                <label class="layui-form-label">用户ID</label>
+                <input type="text" placeholder="请输入" autocomplete="off" name="userId" id="userName"
+                       class="layui-input"required  lay-verify="required" />
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户密码</label>
+                <input type="password" placeholder="请输入" autocomplete="off" name="userPwd" id="password"
+                       class="layui-input" required lay-verify="required" />
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户类型</label>
+                <div class="layui-input-block userType">
+                    <select name="roleId" id="userType" required lay-verify="required">
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">验证码</label>
+                <input type="verify" placeholder="图形验证码" autocomplete="off" name="inputStr" id="verify"
+                       class="layui-input" required lay-verify="required" />
+                <div id="imgCode">
+                    <img src="/verify/verificationCode?id=" +Math.random().toString() title="看不清，再来一张" />
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <button class="layui-btn layui-btn-fluid" id="login" lay-filter="login" lay-submit>登录</button>
+            </div>
+            <div class="layui-form-item btnGroup">
+                <a href="javascript:void(0)" id="reginBtn">用户注册</a>
+                <a href="javascript:void(0)" id="forgetPwdBtn">忘记密码</a>
+            </div>
+        </form>
+    </div>
+    <div id="register" class="layui-hide">
+        <div class="flatType">
+            <h3>申报单位类型</h3>
+            <div class="layui-form">
+                <input type="radio" name="roleId" value="企业" title="企业" checked>
+            </div>
+        </div>
+        <div class="reginForm">
+            <form class="layui-form" lay-filter="regin" action="/user/insertSite" method="post" enctype="multipart/form-data">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户ID</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="userId" id="reUserID"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="userName" id="reUserName"
+                           class="layui-input" required lay-verify="required|username" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <input type="password" placeholder="请输入" autocomplete="off" name="password" id="rePassword"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">确认密码</label>
+                    <input type="password" placeholder="请输入" autocomplete="off" name="userPwd" id="reConfirmPwd"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">申报人</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="applicant" id="declarant"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">申报单位名称</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="siteName" id="declareName"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">组织机构代码</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="orgCode" id="organizationalCode"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">企业类型</label>
+                    <div class="layui-input-block selectCon">
+                        <select name="siteTypeId" id="businessType" required lay-verify="required">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属行业</label>
+                    <div class="layui-input-block selectCon">
+                        <select name="industyTypeId" id="industryInvolved" required lay-verify="required">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属镇（街道）</label>
+                    <div class="layui-input-block selectCon">
+                        <select name="streetId" id="townStreet" lay-filter="townStreet" required lay-verify="required">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所属镇工业园</label>
+                    <div class="layui-input-block selectCon">
+                        <select name="parkId" id="industrialPark">
+
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单位地址</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="addr" id="unit address"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系人</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="contacts" id="Linkman"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">办公电话</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="tel" id="office phone"
+                           class="layui-input" required lay-verify="required" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系人手机</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="mobile" id="Mobile"
+                           class="layui-input" required lay-verify="required|phone" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">联系人邮箱</label>
+                    <input type="text" placeholder="请输入" autocomplete="off" name="mail" id="Contact email"
+                           class="layui-input" required lay-verify="required|email" />
+                </div>
+                <div class="layui-form-item layui-upload">
+                    <label class="layui-form-label">营业执照</label>
+                    <a href="javascript:void(0)" class="layui-btn upload">上传</a>
+                    <input type="hidden" id="businessLicense" name="businessLicense"/>
+                    <span class="message">上传文件大小不能超过5M，上传格式：jpg、png、gif、bmp、jpeg</span>
+                    <div class="layui-upload-list" id="demo1"></div>
+                    <div class="layui-upload-list" id="demo2"></div>
+                </div>
+                <div class="reBtn">
+                    <a href="javascript:void(0)" class="layui-btn reBack">返回</a>
+                    <button class="layui-btn reSubmit" lay-submit lay-filter="reSubmit">提交</button>
+                </div>
+                <small>注：忘记密码时需要通过用户ID和联系人邮箱重置密码。</small>
+            </form>
+        </div>
+    </div>
+    <div id="forgetPwd" class="layui-hide">
+        <ul class="layui-nav process" lay-filter="process">
+            <li class="layui-nav-item layui-this"><a href="javascript:void(0);">用户ID</a></li>
+            <li class="layui-nav-item"><a href="javascript:void(0);">用户验证</a></li>
+            <li class="layui-nav-item"><a href="javascript:void(0);">新密码</a></li>
+        </ul>
+        <form class="layui-form">
+            <div class="layui-form-item foUserID">
+                <label class="layui-form-label">用户ID</label>
+                <input type="text" placeholder="请输入" autocomplete="off" name="userId" id="foUserID"
+                       class="layui-input" required  lay-verify="required" />
+            </div>
+            <div class="layui-form-item foEmail layui-hide">
+                <label class="layui-form-label">联系人邮箱</label>
+                <input type="text" id="foEmail" class="layui-input" disabled/>
+                <a href="javascript:void(0)" class="layui-btn" id="foGetCode">获取验证码</a>
+            </div>
+            <div class="layui-form-item foEmail layui-hide">
+                <label class="layui-form-label">验证码</label>
+                <input type="verify" placeholder="请输入" autocomplete="off" name="foVerify" id="foVerify"
+                       class="layui-input" required lay-verify="required" />
+            </div>
+            <div class="layui-form-item foNewPwd layui-hide">
+                <label class="layui-form-label">新密码</label>
+                <input type="password" placeholder="请输入" autocomplete="off" name="userPwd" id="foNewPwd"
+                       class="layui-input" required lay-verify="required" />
+            </div>
+            <div class="layui-form-item foNewPwd layui-hide">
+                <label class="layui-form-label">确认新密码</label>
+                <input type="password" placeholder="请输入" autocomplete="off" name="userPwd" id="foConfirmPwd"
+                       class="layui-input" required lay-verify="required" />
+            </div>
+            <div class="foBtn">
+                <a href="javascript:void(0)" class="layui-btn nextStep">下一步</a>
+                <a href="javascript:void(0)" class="layui-btn layui-hide secondStep">下一步</a>
+                <button class="layui-btn layui-hide foConfirm" lay-submit lay-filter="foConfirm">确定</button>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript" th:src="@{/public/editSelect/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/public/layui/layui.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/login.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="loginHtml" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>苏州高新区劳动关系和谐企业和工业园申报管理系统</title>
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="ctx" th:content="@{/}"/>
+    <link rel="shortcut icon" th:href="@{/public/web/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/public/layui/css/layui.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/zTree/css/zTreeStyle/zTreeStyle.css}" media="all" />
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/main.css}" media="all"/>
+    <link rel="stylesheet" th:href="@{/public/web/css/admin/business.css}" media="all"/>
+</head>
+<body>
+    <div class="main">
+        <header>
+            <img src="/public/web/images/logo.png"/>
+            <h2>苏州高新区劳动关系和谐企业和工业园申报管理系统</h2>
+            <div id="message">
+                <a id="userName" href="javascript:void(0)">段飞</a>，欢迎您登录系统&nbsp; | &nbsp;<a id="signOut" href="javascript:void(0)">退出</a>
+            </div>
+        </header>
+        <div id="content">
+            <ul class="layui-nav layui-nav-tree" lay-filter="progress">
+                <li class="layui-nav-item"><a data-id="reportProcess" href="javascript:void(0)">申报流程</a></li>
+                <li class="layui-nav-item"><a data-id="reportSelfAssessment" href="javascript:void(0)">申报自评</a></li>
+                <li class="layui-nav-item"><a data-id="reportProgress" href="javascript:void(0)">申报进展</a></li>
+                <li class="layui-nav-item"><a data-id="registerMessage" href="javascript:void(0)">注册信息</a></li>
+                <li class="layui-nav-item"><a data-id="dataDownload" href="javascript:void(0)">资料下载</a></li>
+            </ul>
+            <div id="reportProcess" class="rightContent layui-hide">
+                <div class="tableContent">
+                    <h2 class="processTitle">申报流程说明</h2>
+                    <div>
+                        <h3 class="list1">1. &nbsp;&nbsp;申报事项说明</h3>
+                        <p class="list2">
+                            ①&nbsp;&nbsp;企业需根据自身情况在“申报自评”填写自评申请表，并按照要求上传相关材料;
+                        </p>
+                        <p class="list2">
+                            ②&nbsp;&nbsp;材料上传说明：上传材料分为申报材料和审核材料，请根据“流传材料清单”命名后在对应区域上传；备注：申报材料为确认申报资质的材料，没有提交此类材料则不具备申报资质；审核材料是用于评审核查的材料，关系到审核评分，请按照标准要求上传，上传材料缺失则对应评分项不得分;
+                        </p>
+                        <p class="list2">
+                            ③&nbsp;&nbsp;企业可在“申报进展”查看镇（街道）、区三方委员会的测评、评定结果，以及企业授予称号情况，最终结果会在相关网站上公示;
+                        </p>
+                        <p class="list2">
+                            ④&nbsp;&nbsp;“注册信息”可用于修改或更新企业注册信息，但申报材料已经提交的企业请勿进行修改操作。
+                        </p>
+                        <h3 class="list1">2. &nbsp;&nbsp;复审事项说明</h3>
+                        <p class="list2">
+                            复审流程仅针对获得和谐企业及和谐先进企业称号的企业进行复审申报，企业需在来年接到复审通报时在“复审”模块提交年度复审材料。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div id="reportSelfAssessment" class="rightContent layui-hide">
+                <h3>苏州高新区劳动关系和谐企业自评申报表（企业）</h3>
+                <div class="btnGroup">
+                    <button class="layui-btn layui-btn-sm" id="download">下载</button>
+                    <button class="layui-btn layui-btn-sm" id="print">打印</button>
+                </div>
+                <div class="tableContent">
+                    <div class="table1">
+                        <div id="table1" class="layui-table" lay-filter="table1"></div>
+                    </div>
+                    <div class="table2 layui-hide">
+                        <div id="table2" class="layui-table" lay-filter="table2"></div>
+                        <script type="text/html" id="upload">
+                            <a class="layui-btn layui-btn-xs upload layui-btn-disabled" data-seqId="{{d.seqId}}" data-appendixType="{{d.appendixType}}" lay-event="upload">选择文件</a>
+                        </script>
+                    </div>
+                    <div class="tableMemo layui-hide">
+                        <div>
+                            <button class="layui-btn layui-btn-sm layui-hide" id="uploadMemo">上传</button>
+                            <span style="color:#f00;">注：附件上传，(文件格式：doc|xls|xlsx|docx|png|pdf|jpg|jpeg|gif|bmp|zip|rar)</span>
+                        </div>
+                        <div id="tableMemo" class="layui-table" lay-filter="tableMemo"></div>
+                        <script type="text/html" id="deleteFile">
+                            <a class="layui-btn layui-btn-xs deleteFile layui-btn-disabled" data-seqId="{{d.seqId}}" lay-event="deleteFile">删除</a>
+                        </script>
+                    </div>
+                </div>
+                <div class="btnGroup">
+                    <button class="layui-btn layui-btn-sm" id="next">下一步</button>
+                    <button class="layui-btn layui-btn-sm layui-hide" id="prev">上一步</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-disabled" id="save">保存</button>
+                    <button class="layui-btn layui-btn-sm layui-btn-disabled" id="submits" disabled>提交</button>
+                </div>
+            </div>
+            <div id="reportProgress" class="rightContent layui-hide">
+                <div class="tableContent">
+                    <div id="table3" class="layui-table" lay-filter="table3"></div>
+                </div>
+            </div>
+            <div id="registerMessage" class="rightContent layui-hide">
+                <h3>注册信息</h3>
+                <form class="layui-form" lay-filter="regin">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">申报人</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="applicant" id="applicant"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">申报单位名称</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="siteName" id="siteName"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">组织结构代码</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="orgCode" id="orgCode"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">企业类型</label>
+                        <div class="layui-input-block selectCon">
+                            <select name="siteTypeId" id="siteTypeId" required lay-verify="required">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属行业</label>
+                        <div class="layui-input-block selectCon">
+                            <select name="industryTypeId" id="industryTypeId" required lay-verify="required">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属镇（街道）</label>
+                        <div class="layui-input-block selectCon">
+                            <select name="streetId" id="streetId" lay-filter="townStreet" required lay-verify="required">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属镇工业园</label>
+                        <div class="layui-input-block selectCon">
+                            <select name="parkId" id="parkId" required lay-verify="required">
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">单位地址</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="addr" id="addr"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="contacts" id="contacts"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">办公电话</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="tel" id="tel"
+                               class="layui-input" required lay-verify="required" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人手机</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="mobile" id="mobile"
+                               class="layui-input" required lay-verify="required|phone" />
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">联系人邮箱</label>
+                        <input type="text" placeholder="请输入" autocomplete="off" name="mail" id="mail"
+                               class="layui-input" required lay-verify="required|email" />
+                    </div>
+                    <div class="pour">注：忘记密码时需要通过联系人邮箱重置密码，请确保输入的邮箱正确。</div>
+                    <div class="saveBtn">
+                        <button class="layui-btn reginSave" lay-submit lay-filter="reginSave">保存</button>
+                    </div>
+                </form>
+            </div>
+            <div id="dataDownload" class="rightContent layui-hide">
+                <div class="tableContent">
+                    <div id="table4" class="layui-table" lay-filter="table4"></div>
+                    <script type="text/html" id="downloads">
+                        <a class="layui-btn layui-btn-xs download" lay-event="download" download>下载</a>
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--修改密码-->
+    <form class="layui-form layui-hide" id="changePwd" action="" style="padding:20px 20px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">当前密码</label>
+            <div class="layui-input-block">
+                <input type="text" name="oldPwd" id="oldPwd" required  lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="newPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认新密码</label>
+            <div class="layui-input-block">
+                <input type="password" name="newPwd" id="confirmPwd" required lay-verify="required" placeholder="请输入" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </form>
+    <script type="text/javascript" th:src="@{/public/editSelect/jquery.min.js}"></script>
+    <script src="http://www.jq22.com/jquery/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" th:src="@{/public/jqprint/jquery.jqprint-0.3.js}"></script>
+    <script type="text/javascript" th:src="@{/public/layui/layui.js}"></script>
+
+    <!--<script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.core.js}"></script>-->
+    <!--<script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.excheck.js}"></script>-->
+    <!--<script type="text/javascript" th:src="@{/public/zTree/js/jquery.ztree.exedit.js}"></script>-->
+
+    <script type="text/javascript" th:src="@{/public/web/js/admin/main.js}"></script>
+    <script type="text/javascript" th:src="@{/public/web/js/admin/business.js}"></script>
+</body>
+</html>

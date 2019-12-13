@@ -1,0 +1,10 @@
+#content #mainPage{
+    margin:0 auto;
+}
+#content #mainPage .layui-btn-lg{
+    width:200px;
+    margin:0 50px;
+    position:relative;
+    top:40%;
+    cursor: pointer;
+}
